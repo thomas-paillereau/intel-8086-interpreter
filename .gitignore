@@ -6,6 +6,7 @@
 !*.hh
 !.gitignore
 !CMakeLists.txt
+!16bit-intel-8086-documentation.pdf
 
 .idea/
 
