@@ -4,7 +4,18 @@
 #include <ostream>
 
 std::string Instruction::toString() const {
-    return "UNDEFINED";
+    if (name_ == "UNDEFINED")
+        return name_;
+
+    std::string res;
+    res += name_;
+    if (mod_ != -1 && rnm_ != -1) {
+    } else if (reg_ != -1) {
+    } else if (data_used_) {
+    } else if (addr_used_) {
+    } else {
+    }
+    return res;
 }
 
 void Instruction::print() const {
