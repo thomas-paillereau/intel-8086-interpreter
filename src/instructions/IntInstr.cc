@@ -6,8 +6,8 @@ IntInstr::IntInstr(const std::vector<uint8_t> &content, int position) {
     if (0b11001101 == curr1) {
         effect_ = 0;
         size_ = 2;
-        type_ = content.at(position + 1);
-        type_used_ = true;
+        info_byte1_ = content.at(position + 1);
+        info_byte_type_ = TYPE;
     } else {
         effect_ = 1;
         size_ = 1;

@@ -27,15 +27,23 @@ protected:
     int reg_ = -1;
     int rm_ = -1;
 
-    uint8_t data_ = 0b0;
-    uint8_t data2_ = 0b0;
-    uint8_t addr_low_ = 0b0;
-    uint8_t addr_high_ = 0b0;
-    uint8_t type_ = 0b0;
+    enum byte_type {
+        NONE,
+        DATA,
+        ADDR_HL,
+        PORT,
+        DISP_HL,
+        OFFSET_HL,
+        SEG_HL,
+        DISP,
+        DATA_HL,
+        TYPE,
+    };
 
-    bool data_used_ = false;
-    bool addr_used_ = false;
-    bool type_used_ = false;
+    byte_type info_byte_type_ = NONE;
+
+    uint8_t info_byte1_ = 0b0;
+    uint8_t info_byte2_ = 0b0;
 
     std::string name_ = "UNDEFINED";
 };

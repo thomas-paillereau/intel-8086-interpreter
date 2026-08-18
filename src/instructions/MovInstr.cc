@@ -11,19 +11,19 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     } else if (0b11000110 <= curr1 && curr1 <= 0b11000111) {
         effect_ = 1;
         size_ = 4;
-        data_used_ = true;
+        info_byte_type_ = DATA;
     } else if (0b10110000 <= curr1 && curr1 <= 0b10111111) {
         effect_ = 2;
         size_ = 3;
-        data_used_ = true;
+        info_byte_type_ = DATA;
     } else if (0b10100000 <= curr1 && curr1 <= 0b10100001) {
         effect_ = 3;
         size_ = 3;
-        addr_used_ = true;
+        info_byte_type_ = ADDR_HL;
     } else if (0b10100010 <= curr1 && curr1 <= 0b10100011) {
         effect_ = 4;
         size_ = 3;
-        addr_used_ = true;
+        info_byte_type_ = ADDR_HL;
     } else if (curr1 == 0b10001110) {
         effect_ = 5;
         size_ = 2;
@@ -54,15 +54,15 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     }
 
     if (effect_ == 1) {
-        data_ = content.at(position + 2);
-        data2_ = content.at(position + 3);
+        info_byte1_ = content.at(position + 2);
+        info_byte2_ = content.at(position + 3);
     } else if (effect_ == 2) {
-        data_ = content.at(position + 1);
-        data2_ = content.at(position + 2);
+        info_byte1_ = content.at(position + 1);
+        info_byte2_ = content.at(position + 2);
     }
 
     if (effect_ == 3 || effect_ == 4) {
-        addr_low_ = content.at(position + 1);
-        addr_high_ = content.at(position + 2);
+        info_byte1_ = content.at(position + 1);
+        info_byte2_ = content.at(position + 2);
     }
 }

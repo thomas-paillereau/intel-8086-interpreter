@@ -11,8 +11,8 @@ std::string Instruction::toString() const {
     res += name_;
     if (mod_ != -1 && rm_ != -1) {
     } else if (reg_ != -1) {
-    } else if (data_used_) {
-    } else if (addr_used_) {
+    } else if (info_byte_type_ == DATA) {
+    } else if (info_byte_type_ == ADDR_HL) {
     } else {
     }
     return res;

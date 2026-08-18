@@ -11,11 +11,11 @@ AddInstr::AddInstr(const std::vector<uint8_t> &content, int position) {
     } else if (0b10000000 <= curr1 && curr1 <= 0b10000011) {
         effect_ = 1;
         size_ = 4;
-        data_used_ = true;
+        info_byte_type_ = DATA;
     } else {
         effect_ = 3;
         size_ = 3;
-        data_used_ = true;
+        info_byte_type_ = DATA;
     }
 
     w_ = Utils::getEnabledBitFromByte(curr1, 0);
@@ -32,14 +32,14 @@ AddInstr::AddInstr(const std::vector<uint8_t> &content, int position) {
     }
 
     if (effect_ == 1) {
-        data_ = content.at(position + 2);
+        info_byte1_ = content.at(position + 2);
         if (w_)
-            data2_ = content.at(position + 3);
+            info_byte2_ = content.at(position + 3);
     }
 
     if (effect_ == 2) {
-        data_ = content.at(position + 1);
+        info_byte1_ = content.at(position + 1);
         if (w_)
-            data2_ = content.at(position + 2);
+            info_byte2_ = content.at(position + 2);
     }
 }
