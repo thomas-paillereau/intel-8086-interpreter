@@ -50,7 +50,7 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
 
     if (effect_ == 0 || effect_ == 1 || effect_ == 5 || effect_ == 6) {
         mod_ = Utils::getIntervalNumFromByte(curr1, 7, 6);
-        rnm_ = Utils::getIntervalNumFromByte(curr1, 2, 0);
+        rm_ = Utils::getIntervalNumFromByte(curr1, 2, 0);
     }
 
     if (effect_ == 1) {

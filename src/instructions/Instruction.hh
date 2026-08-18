@@ -25,7 +25,7 @@ protected:
 
     int mod_ = -1;
     int reg_ = -1;
-    int rnm_ = -1;
+    int rm_ = -1;
 
     uint8_t data_ = 0b0;
     uint8_t data2_ = 0b0;

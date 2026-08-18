@@ -26,7 +26,7 @@ AddInstr::AddInstr(const std::vector<uint8_t> &content, int position) {
 
     if (effect_ != 2) {
         mod_ = Utils::getIntervalNumFromByte(curr2, 7, 6);
-        rnm_ = Utils::getIntervalNumFromByte(curr2, 5, 3);
+        rm_ = Utils::getIntervalNumFromByte(curr2, 5, 3);
         if (effect_ == 0)
             reg_ = Utils::getIntervalNumFromByte(curr2, 2, 0);
     }
