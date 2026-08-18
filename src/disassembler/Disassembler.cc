@@ -19,15 +19,15 @@ void Disassembler::disassemble() {
     int pos = header_size_;
     while (pos < header_size_ + content_size_) {
         auto instruction = disassembleInstruction(pos);
-        printf("%04x: %-14s", pos, getStringFromBytes(pos, instruction->getSize()).c_str());
+        printf("%04x: %-14s", pos - header_size_, getStringFromBytes(pos, instruction->getSize()).c_str());
         instruction->print();
         pos += instruction->getSize();
     }
 }
 
 std::string Disassembler::getStringFromBytes(int position, int size) const {
-    if (position + size >= header_size_ + content_size_)
-        return "";
+    if (position + size > header_size_ + content_size_)
+        return "00";
     std::stringstream ss;
     for (int i = 0; i < size; ++i) {
         ss << std::hex
@@ -141,6 +141,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // LOOPNZ/LOOPNE
     // JCXZ
     // INT
+    if (pos1 <= 0b11001101 || pos1 <= 0b11001100) {
+        return std::make_unique<IntInstr>(content_, position);
+    }
     // INTO
     // IRET
 

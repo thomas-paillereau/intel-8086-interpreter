@@ -5,3 +5,5 @@
 #include "MovInstr.hh"
 
 #include "AddInstr.hh"
+
+#include "IntInstr.hh"
