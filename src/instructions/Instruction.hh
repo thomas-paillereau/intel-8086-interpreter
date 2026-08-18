@@ -15,7 +15,25 @@ public:
     // TODO virtual void exec();
 
 protected:
+    /// Mod + R/M
+    std::string decodeModRm() const;
+
+    /// Reg
+    std::string decodeRegImm() const;
+
+    /// Data
+    std::string decodeAccImm() const;
+
+    /// Addr
+    std::string decodeDirectAddr() const;
+
+    std::string decodeRelative() const;
+
+    /// Info byte present (PORT, OFFSET, SEG, DISP, TYPE)
+    std::string decodeOnlyImm() const;
+
     int size_ = 1;
+    int position_ = 0;
 
     int effect_ = 0;
 
@@ -26,6 +44,8 @@ protected:
     int mod_ = -1;
     int reg_ = -1;
     int rm_ = -1;
+
+    bool two_bits_reg_ = false;
 
     enum byte_type {
         NONE,

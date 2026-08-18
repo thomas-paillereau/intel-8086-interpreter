@@ -3,6 +3,7 @@
 
 MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "mov";
+    position_ = position;
     uint8_t curr1 = content.at(position);
     uint8_t curr2 = content.at(position + 1);
     if (0b10001000 <= curr1 && curr1 <= 0b10001011) {

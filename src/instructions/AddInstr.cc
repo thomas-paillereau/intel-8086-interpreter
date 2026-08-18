@@ -3,6 +3,7 @@
 
 AddInstr::AddInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "add";
+    position_ = position;
     uint8_t curr1 = content.at(position);
     uint8_t curr2 = content.at(position + 1);
     if (curr1 <= 0b00000011) {

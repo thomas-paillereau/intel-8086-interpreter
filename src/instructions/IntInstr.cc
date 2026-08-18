@@ -2,6 +2,7 @@
 
 IntInstr::IntInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "int";
+    position_ = position;
     uint8_t curr1 = content.at(position);
     if (0b11001101 == curr1) {
         effect_ = 0;
