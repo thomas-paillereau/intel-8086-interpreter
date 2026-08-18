@@ -1,12 +1,162 @@
 #include "Disassembler.hh"
 
+#include <iomanip>
+#include <memory>
+#include <sstream>
 
-Disassembler::Disassembler(const std::vector<uint8_t> &content) : content_(content) {
+#include "cstdio"
+
+#include "../instructions/instruction-header.hh"
+#include "../utils/Utils.hh"
+
+Disassembler::Disassembler(const std::vector<uint8_t> &content, int content_size, int header_size)
+    : content_(content)
+      , content_size_(content_size)
+      , header_size_(header_size) {
 }
 
 void Disassembler::disassemble() {
-
+    int pos = header_size_;
+    while (pos < header_size_ + content_size_) {
+        auto instruction = disassembleInstruction(pos);
+        printf("%04x: %-14s", pos, getStringFromBytes(pos, instruction->getSize()).c_str());
+        instruction->print();
+        pos += instruction->getSize();
+    }
 }
 
-void Disassembler::disassemble_instruction(int &position) {
+std::string Disassembler::getStringFromBytes(int position, int size) const {
+    if (position + size >= header_size_ + content_size_)
+        return "";
+    std::stringstream ss;
+    for (int i = 0; i < size; ++i) {
+        ss << std::hex
+                << std::setw(2)
+                << std::setfill('0')
+                << static_cast<int>(content_[position + i]);
+    }
+    return ss.str();
+}
+
+std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) {
+    const uint8_t pos1 = content_.at(position);
+    const uint8_t pos2 = content_.at(position + 1);
+
+    /// DATA TRANSFER
+    // MOV
+    if ((0b10001000 <= pos1 && pos1 <= 0b10001011)
+        || (0b11000110 <= pos1 && pos1 <= 0b11000111)
+        || (0b10110000 <= pos1 && pos1 <= 0b10111111)
+        || (0b10100000 <= pos1 && pos1 <= 0b10100001)
+        || (0b10100010 <= pos1 && pos1 <= 0b10100011)
+        || (pos1 == 0b10001110)
+        || (pos1 == 0b10001100)) {
+        return std::make_unique<MovInstr>(content_, position);
+    }
+    // PUSH
+    // POP
+    // XCHG
+    // IN
+    // OUT
+    // XLAT
+    // LEA
+    // LDS
+    // LES
+    // LAHF
+    // SAHF
+    // PUSHF
+    // POPF
+
+    /// ARITHMETIC
+    // ADD
+    if ((pos1 <= 0b00000011)
+        || (0b10000000 <= pos1 && pos1 <= 0b10000011 && Utils::getIntervalNumFromByte(pos2, 5, 3) == 0b000)
+        || (0b00000100 <= pos1 && pos1 <= 0b00000101)) {
+        return std::make_unique<AddInstr>(content_, position);
+    }
+    // ADC
+    // INC
+    // AAA
+    // BAA
+    // SUB
+    // SSB
+    // DEC
+    // NEG
+    // CMP
+    // AAS
+    // DAS
+    // MUL
+    // IMUL
+    // AAM
+    // DIV
+    // IDIV
+    // AAD
+    // CBW
+    // CWD
+
+    /// LOGIC
+    // NOT
+    // SHL/SAL
+    // SHR
+    // SAR
+    // ROL
+    // ROR
+    // RCL
+    // RCR
+    // AND
+    // TEST
+    // OR
+    // XOR
+
+    /// STRING MANIPULATION
+    // REP
+    // MOVS
+    // CMPS
+    // SCAS
+    // LODS
+    // STOS
+
+    /// CONTROL TRANSFER
+    // CALL
+    // JMP
+    // RET
+    // JE/JZ
+    // JL/JNGE
+    // JLE/JNG
+    // JB/JNAE
+    // JBE/JNA
+    // JP/JPE
+    // JO
+    // JS
+    // JNE/JNZ
+    // JNL/JGE
+    // JNLE/JG
+    // JNB/JAE
+    // JNBE/JA
+    // JNP/JPO
+    // JNO
+    // JNS
+    // LOOP
+    // LOOPZ/LOOPE
+    // LOOPNZ/LOOPNE
+    // JCXZ
+    // INT
+    // INTO
+    // IRET
+
+    /// PROCESSOR CONTROL
+    // CLC
+    // CMC
+    // STC
+    // CLD
+    // STD
+    // CLI
+    // STI
+    // HLT
+    // WAIT
+    // ESC
+    // LOCK
+
+    // UNDEFINED
+    return std::make_unique<Instruction>();
 }

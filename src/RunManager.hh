@@ -41,5 +41,5 @@ private:
     bool pretty_print_enabled_;
 
     std::vector<uint8_t> content_;
-    int instSectionSize_;
+    int instr_section_size_;
 };

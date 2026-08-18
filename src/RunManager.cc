@@ -1,9 +1,11 @@
 #include "RunManager.hh"
+#include "disassembler/Disassembler.hh"
 
 #include <cmath>
 #include <iostream>
 #include <fstream>
-#include <cstdint>
+
+#define HEADER_SIZE 0x20
 
 RunManager::RunManager(int argc, char **argv) {
     status = NORMAL;
@@ -42,7 +44,7 @@ RunManager::RunManager(int argc, char **argv) {
     content_ = {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
 
     // Getting the size of instruction section
-    instSectionSize_ =
+    instr_section_size_ =
             content_.at(8) % 256 * static_cast<int>(std::pow(256, 0))
             + content_.at(7) % 256 * static_cast<int>(std::pow(256, 1))
             + content_.at(6) % 256 * static_cast<int>(std::pow(256, 2))
@@ -52,8 +54,10 @@ RunManager::RunManager(int argc, char **argv) {
 void RunManager::run() {
     if (interpreter_enabled_)
         std::cout << "Interpreter " << std::endl;
-    else
-        std::cout << "Disassembler " << std::endl;
+    else {
+        auto disassembler = Disassembler(content_, instr_section_size_, HEADER_SIZE);
+        disassembler.disassemble();
+    }
 }
 
 void RunManager::exitIfError() const {

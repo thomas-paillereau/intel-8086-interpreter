@@ -6,11 +6,11 @@
 
 #include "Instruction.hh"
 
-class MovInstr : Instruction {
+class MovInstr : public Instruction {
 public:
-    MovInstr(int position, std::vector<uint8_t> &content);
+    MovInstr(const std::vector<uint8_t> &content, int position);
 
-    std::string toString() override;
+    std::string toString() const override;
 
 private:
     int type_;

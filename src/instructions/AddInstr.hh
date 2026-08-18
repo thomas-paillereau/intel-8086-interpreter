@@ -5,11 +5,11 @@
 
 #include "Instruction.hh"
 
-class AddInstr : Instruction {
+class AddInstr : public Instruction {
 public:
-    AddInstr(int position, std::vector<uint8_t> &content);
+    AddInstr(const std::vector<uint8_t> &content, int position);
 
-    std::string toString() override;
+    std::string toString() const override;
 
 private:
     int type_;

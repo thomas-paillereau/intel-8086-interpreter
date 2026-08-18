@@ -18,4 +18,5 @@ add_executable(intel8084Interpreter
         src/instructions/MovInstr.hh
         src/utils/Utils.cc
         src/utils/Utils.hh
+        src/instructions/instruction-header.hh
 )

@@ -1,23 +1,31 @@
 #include "MovInstr.hh"
 #include "../utils/Utils.hh"
 
-MovInstr::MovInstr(int position, std::vector<uint8_t> &content) {
+MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     uint8_t curr1 = content.at(position);
     uint8_t curr2 = content.at(position + 1);
-    if (curr1 < 0b10001100)
+    if (0b10001000 <= curr1 && curr1 <= 0b10001011) {
         type_ = 0;
-    else if (curr1 == 0b10001100)
-        type_ = 6;
-    else if (curr1 == 0b10001110)
-        type_ = 5;
-    else if (curr1 < 0b10100010)
-        type_ = 3;
-    else if (curr1 < 0b10100100)
-        type_ = 4;
-    else if (curr1 < 0b11000000)
-        type_ = 2;
-    else
+        size_ = 2;
+    } else if (0b11000110 <= curr1 && curr1 <= 0b11000111) {
         type_ = 1;
+        size_ = 4;
+    } else if (0b10110000 <= curr1 && curr1 <= 0b10111111) {
+        type_ = 2;
+        size_ = 3;
+    } else if (0b10100000 <= curr1 && curr1 <= 0b10100001) {
+        type_ = 3;
+        size_ = 3;
+    } else if (0b10100010 <= curr1 && curr1 <= 0b10100011) {
+        type_ = 4;
+        size_ = 3;
+    } else if (curr1 == 0b10001110) {
+        type_ = 5;
+        size_ = 2;
+    } else {
+        type_ = 6;
+        size_ = 2;
+    }
 
     if (type_ == 0 || type_ == 1 || type_ == 3 || type_ == 4)
         w_ = Utils::getEnabledBitFromByte(curr1, 0);
@@ -54,6 +62,6 @@ MovInstr::MovInstr(int position, std::vector<uint8_t> &content) {
     }
 }
 
-std::string MovInstr::toString() {
-    return Instruction::toString() + "Mov";
+std::string MovInstr::toString() const {
+    return "mov";
 }

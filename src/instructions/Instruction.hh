@@ -3,14 +3,16 @@
 
 class Instruction {
 public:
-    virtual std::string toString();
+    Instruction() = default;
 
-    void print();
+    virtual std::string toString() const;
 
-    int getSize();
+    void print() const;
 
-    // TODO exec
+    int getSize() const;
+
+    // TODO virtual void exec();
 
 protected:
-    int size_;
+    int size_ = 1;
 };
