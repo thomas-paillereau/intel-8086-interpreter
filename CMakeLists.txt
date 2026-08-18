@@ -1,4 +1,5 @@
-cmake_minimum_required(VERSION 4.3)
+#cmake_minimum_required(VERSION 4.3)
+cmake_minimum_required(VERSION 3.31.6)
 project(intel8084Interpreter)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -10,4 +11,11 @@ add_executable(intel8084Interpreter
         src/disassembler/Disassembler.cc
         src/disassembler/Disassembler.hh
         src/instructions/Instruction.cc
-        src/instructions/Instruction.hh)
+        src/instructions/Instruction.hh
+        src/instructions/AddInstr.cc
+        src/instructions/AddInstr.hh
+        src/instructions/MovInstr.cc
+        src/instructions/MovInstr.hh
+        src/utils/Utils.cc
+        src/utils/Utils.hh
+)

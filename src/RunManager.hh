@@ -15,25 +15,31 @@ public:
         WRONG_ARGS,
         FILE_NOT_OPENED,
     };
+
     status status;
 
     /// Constructor
-    RunManager(int argc, char** argv);
+    RunManager(int argc, char **argv);
 
     /// Running the program depending on the chosen flags
     void run();
 
+    /// Exits the process corresponding to the status
+    void exitIfError() const;
+
     /// Getter of the content of the file given as argument
-    const std::vector<uint8_t>& get_content() const;
+    const std::vector<uint8_t> &getContent() const;
 
     /// Getter of interpreter_enabled_
-    bool get_interpret_enabled() const;
+    bool getInterpretEnabled() const;
 
     /// Getter of pretty_print_enabled_
-    bool get_pretty_print() const;
+    bool getPrettyPrint() const;
 
 private:
     bool interpreter_enabled_;
     bool pretty_print_enabled_;
+
     std::vector<uint8_t> content_;
+    int instSectionSize_;
 };
