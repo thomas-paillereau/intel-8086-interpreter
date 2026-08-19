@@ -42,6 +42,8 @@ protected:
     bool w_ = false;
     bool d_ = false;
     bool s_ = false;
+    bool v_ = false;
+    bool v_used_ = false;
 
     int mod_ = -1;
     int reg_ = -1;

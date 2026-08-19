@@ -126,10 +126,14 @@ std::string Instruction::decodeModRm() const {
     std::string regValue;
     if (reg_ != -1)
         regValue = getRegisterString(reg_, w_, two_bits_reg_);
-    else //TODO check if this work not only with /r and /7
+    else if (v_used_)
+        regValue = v_ ? "cl" : "1";
+    else if (info_byte_type_ != NONE) //TODO check if this work not only with /r and /7
         regValue = Uint16ToHexString(uint8ToUint16(imm_low_, imm_high_, w_), w_ ? 4 : 2);
 
     if (mod_ == 0b11) {
+        if (regValue.empty())
+            return getRegisterString(rm_, w_, two_bits_reg_);
         if (d_)
             return regValue + ", " + getRegisterString(rm_, w_, two_bits_reg_);
         return getRegisterString(rm_, w_, two_bits_reg_) + ", " + regValue;
@@ -150,6 +154,8 @@ std::string Instruction::decodeModRm() const {
         operand = "di";
     else if (rm_ == 0b110) {
         if (mod_ == 0b00) {
+            if (regValue.empty())
+                return decodeDirectMemory(disp_low_, disp_high_);
             if (d_)
                 return regValue + ", " + decodeDirectMemory(disp_low_, disp_high_);
             return decodeDirectMemory(disp_low_, disp_high_) + ", " + regValue;
@@ -158,6 +164,9 @@ std::string Instruction::decodeModRm() const {
     } else if (rm_ == 0b111)
         operand = "bx";
     std::string rmValue = decodeMemoryOperand(operand, mod_, disp_low_, disp_high_);
+
+    if (regValue.empty())
+        return rmValue;
     if (d_)
         return regValue + ", " + rmValue;
     return rmValue + ", " + regValue;

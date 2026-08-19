@@ -8,14 +8,16 @@ JmpInstr::JmpInstr(const std::vector<uint8_t> &content, int position) {
 
     uint8_t curr1 = content.at(position);
 
-    w_ = Utils::getEnabledBitFromByte(curr1, 0);
+    w_ = true;
     if (0b11101001 == curr1) {
         effect_ = 0;
         size_ = 1;
         info_byte_type_ = DISP_HL;
     } else if (0b11101011 == curr1) {
         effect_ = 1;
-        size_ = 2;
+        name_ += " short";
+        w_ = false;
+        size_ = 1;
         info_byte_type_ = DISP;
     } else if (0b11111111 == curr1
                && Utils::getIntervalNumFromByte(content.at(position + 1), 5, 3) == 0b100) {

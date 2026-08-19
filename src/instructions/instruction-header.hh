@@ -17,6 +17,8 @@
 #include "arithmeticInstr/CmpInstr.hh"
 
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
+#include "logicInstr/ShlSalInstr.hh"
+
 #include "logicInstr/TestInstr.hh"
 
 #include "logicInstr/XorInstr.hh"
