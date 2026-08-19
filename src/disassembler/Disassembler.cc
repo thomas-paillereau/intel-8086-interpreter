@@ -102,6 +102,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // DEC
     // NEG
     // CMP
+    if ((0b00111000 <= curr1 && curr1 <= 0b00111011)
+        || (0b10000000 <= curr1 && curr1 <= 0b10000011
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b111)
+        || (0b00111100 <= curr1 && curr1 <= 0b00111101)) {
+        return std::make_unique<CmpInstr>(content_, position);
+    }
     // AAS
     // DAS
     // MUL

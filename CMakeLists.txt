@@ -29,6 +29,8 @@ add_executable(intel8084Interpreter
         src/instructions/logicInstr/XorInstr.hh
         src/instructions/dataTransferInstr/LeaInstr.cc
         src/instructions/dataTransferInstr/LeaInstr.hh
+        src/instructions/arithmeticInstr/CmpInstr.cc
+        src/instructions/arithmeticInstr/CmpInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

@@ -47,6 +47,13 @@ std::string getRegisterString(int reg, bool w, bool only_2_bits) {
     }
 }
 
+uint16_t uint8ToUint16(uint8_t low, uint8_t high, bool w) {
+    uint16_t value = low;
+    if (w)
+        value |= static_cast<uint16_t>(high) << 8;
+    return value;
+}
+
 std::string Uint16ToHexString(uint16_t n, int zero_padding) {
     std::stringstream ss;
     ss << std::hex
@@ -87,7 +94,7 @@ std::string Instruction::toString() const {
 /// Decode Mod R/M
 
 std::string decodeDirectMemory(uint8_t imm_low, uint8_t imm_high) {
-    uint16_t address = static_cast<uint16_t>(imm_low) | (static_cast<uint16_t>(imm_high) << 8);
+    uint16_t address = uint8ToUint16(imm_low, imm_high, true);
     return "[" + Uint16ToHexString(address, 4) + "]";
 }
 
@@ -114,7 +121,12 @@ std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_l
 }
 
 std::string Instruction::decodeModRm() const {
-    std::string regValue = getRegisterString(reg_, w_, two_bits_reg_);
+    std::string regValue;
+    if (reg_ != -1)
+        regValue = getRegisterString(reg_, w_, two_bits_reg_);
+    else //TODO check if this work not only with /r and /7
+        regValue = Uint16ToHexString(uint8ToUint16(imm_low_, imm_high_, w_), w_ ? 4 : 2);
+
     if (mod_ == 0b11) {
         if (d_)
             return regValue + ", " + getRegisterString(rm_, w_, two_bits_reg_);
@@ -154,9 +166,7 @@ std::string Instruction::decodeModRm() const {
 
 std::string Instruction::decodeRegImm() const {
     std::string regString = getRegisterString(reg_, w_, two_bits_reg_);
-    uint16_t rightValue = imm_low_;
-    if (w_)
-        rightValue |= static_cast<uint16_t>(imm_high_) << 8;
+    uint16_t rightValue = uint8ToUint16(imm_low_, imm_high_, w_);
 
     std::stringstream ss;
     ss << regString << ", " << Uint16ToHexString(rightValue, w_ ? 4 : 2);
@@ -168,9 +178,7 @@ std::string Instruction::decodeRegImm() const {
 
 std::string Instruction::decodeAccImm() const {
     std::string accString = w_ ? "ax" : "al";
-    uint16_t rightValue = imm_low_;
-    if (w_)
-        rightValue |= static_cast<uint16_t>(imm_high_) << 8;
+    uint16_t rightValue = uint8ToUint16(imm_low_, imm_high_, w_);
 
     std::stringstream ss;
     ss << accString << ", " << Uint16ToHexString(rightValue, w_ ? 4 : 2);
@@ -181,7 +189,7 @@ std::string Instruction::decodeAccImm() const {
 /// Decode Direct Addr
 
 std::string Instruction::decodeDirectAddr() const {
-    uint16_t address = static_cast<uint16_t>(imm_low_) | (static_cast<uint16_t>(imm_high_) << 8);
+    uint16_t address = uint8ToUint16(imm_low_, imm_high_, true);
     std::string memory = "[" + Uint16ToHexString(address, 4) + "]";
     std::string reg = getRegisterString(0, w_, two_bits_reg_);
 
@@ -200,7 +208,7 @@ std::string Instruction::decodeRelative() const {
     int16_t displacement;
 
     if (w_) {
-        uint16_t value = static_cast<uint16_t>(imm_low_) | (static_cast<uint16_t>(imm_high_) << 8);
+        uint16_t value = uint8ToUint16(imm_low_, imm_high_, true);
         displacement = static_cast<int16_t>(value);
     } else {
         displacement = static_cast<int8_t>(imm_low_);
@@ -214,9 +222,7 @@ std::string Instruction::decodeRelative() const {
 /// Decode Immediate Instr
 
 std::string Instruction::decodeOnlyImm() const {
-    uint16_t value = imm_low_;
-    if (w_)
-        value |= static_cast<uint16_t>(imm_high_) << 8;
+    uint16_t value = uint8ToUint16(imm_low_, imm_high_, w_);
     return Uint16ToHexString(value, w_ ? 4 : 2);
 }
 
