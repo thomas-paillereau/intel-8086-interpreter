@@ -56,7 +56,6 @@ protected:
         PORT,
         DISP_HL,
         OFFSET_HL,
-        SEG_HL,
         DISP,
         DATA_HL,
         TYPE,

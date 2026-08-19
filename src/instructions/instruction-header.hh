@@ -22,8 +22,10 @@
 /// String Manipulation Instructions --------------------------------------------------------------------------------///
 
 /// Control Transfer Instructions -----------------------------------------------------------------------------------///
-#include "controlTransferInstr/IntInstr.hh"
+#include "controlTransferInstr/CallInstr.hh"
 
 #include "controlTransferInstr/JneJnzInstr.hh"
 
 #include "controlTransferInstr/JnbJnaInstr.hh"
+
+#include "controlTransferInstr/IntInstr.hh"

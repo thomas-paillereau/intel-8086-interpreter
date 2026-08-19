@@ -37,6 +37,8 @@ add_executable(intel8084Interpreter
         src/instructions/logicInstr/TestInstr.hh
         src/instructions/controlTransferInstr/JneJnzInstr.cc
         src/instructions/controlTransferInstr/JneJnzInstr.hh
+        src/instructions/controlTransferInstr/CallInstr.cc
+        src/instructions/controlTransferInstr/CallInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

@@ -84,7 +84,7 @@ std::string Instruction::toString() const {
         res += " " + decodeAccImm();
     } else if (info_byte_type_ == ADDR_HL) {
         res += " " + decodeDirectAddr();
-    } else if (info_byte_type_ == DISP) {
+    } else if (info_byte_type_ == DISP || info_byte_type_ == DISP_HL) {
         res += " " + decodeRelative();
     } else if (info_byte_type_ != NONE) {
         res += " " + decodeOnlyImm();

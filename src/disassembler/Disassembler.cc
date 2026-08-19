@@ -155,6 +155,14 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
 
     /// CONTROL TRANSFER
     // CALL
+    if (0b11101000 == curr1
+        || (0b11111111 == curr1
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b010)
+        || 0b10011010 == curr1
+        || (0b11111111 == curr1
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b011)) {
+        return std::make_unique<CallInstr>(content_, position);
+    }
     // JMP
     // RET
     // JE/JZ
