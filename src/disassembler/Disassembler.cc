@@ -130,6 +130,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // RCR
     // AND
     // TEST
+    if ((0b10000100 <= curr1 && curr1 <= 0b10000101)
+        || (0b11110110 <= curr1 && curr1 <= 0b11110111
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
+        || (0b10101000 <= curr1 && curr1 <= 0b10101001)) {
+        return std::make_unique<TestInstr>(content_, position);
+    }
     // OR
     // XOR
     if ((0b00110000 <= curr1 && curr1 <= 0b00110011)

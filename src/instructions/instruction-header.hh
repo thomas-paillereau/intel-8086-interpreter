@@ -15,6 +15,8 @@
 #include "arithmeticInstr/CmpInstr.hh"
 
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
+#include "logicInstr/TestInstr.hh"
+
 #include "logicInstr/XorInstr.hh"
 
 /// String Manipulation Instructions --------------------------------------------------------------------------------///
