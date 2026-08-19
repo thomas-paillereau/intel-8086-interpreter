@@ -1,6 +1,6 @@
 #include "PopInstr.hh"
 
-#include "../utils/Utils.hh"
+#include "utils/Utils.hh"
 
 PopInstr::PopInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "pop";

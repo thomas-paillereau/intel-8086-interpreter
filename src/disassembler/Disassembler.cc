@@ -7,13 +7,13 @@
 
 #include "cstdio"
 
-#include "../instructions/instruction-header.hh"
-#include "../utils/Utils.hh"
+#include "instructions/instruction-header.hh"
+#include "utils/Utils.hh"
 
 Disassembler::Disassembler(const std::vector<uint8_t> &content, int content_size, int header_size)
     : content_(content)
-      , content_size_(content_size)
-      , header_size_(header_size) {
+      , header_size_(header_size)
+      , content_size_(content_size) {
 }
 
 void Disassembler::disassemble() {

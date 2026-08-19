@@ -1,6 +1,6 @@
 #include "PushInstr.hh"
 
-#include "../utils/Utils.hh"
+#include "utils/Utils.hh"
 
 PushInstr::PushInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "push";

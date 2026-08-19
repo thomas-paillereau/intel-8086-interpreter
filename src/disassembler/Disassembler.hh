@@ -17,7 +17,6 @@ private:
     std::string getStringFromBytes(int position, int size) const;
 
     const std::vector<uint8_t> &content_;
-
-    const int header_size_;;
+    const int header_size_;
     const int content_size_;
 };

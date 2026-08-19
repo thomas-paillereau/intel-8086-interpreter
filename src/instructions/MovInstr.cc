@@ -1,6 +1,6 @@
 #include "MovInstr.hh"
 
-#include "../utils/Utils.hh"
+#include "utils/Utils.hh"
 
 MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "mov";

@@ -26,3 +26,13 @@ add_executable(intel8084Interpreter
         src/instructions/PopInstr.cc
         src/instructions/PopInstr.hh
 )
+
+target_compile_options(intel8084Interpreter PRIVATE
+        -Wall
+        -Wextra
+        -Wpedantic
+)
+
+target_include_directories(intel8084Interpreter PRIVATE
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+)

@@ -2,7 +2,7 @@
 
 #include <ios>
 
-#include "../utils/Utils.hh" // TODO change CMakeLists to do better utils integration
+#include "utils/Utils.hh"
 
 AddInstr::AddInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "add";
