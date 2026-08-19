@@ -1,0 +1,24 @@
+#include "DecInstr.hh"
+
+#include "utils/Utils.hh"
+
+DecInstr::DecInstr(const std::vector<uint8_t> &content, int position) {
+    name_ = "dec";
+    position_ = position;
+
+    uint8_t curr1 = content.at(position_);
+
+    if (0b11111110 == curr1 || curr1 == 0b11111111) {
+        uint8_t curr2 = content.at(position_ + 1);
+        effect_ = 0;
+        size_ = 2;
+        w_ = Utils::getEnabledBitFromByte(curr1, 0);
+        mod_ = Utils::getIntervalNumFromByte(curr2, 7, 6);
+        rm_ = Utils::getIntervalNumFromByte(curr2, 2, 0);
+    } else {
+        effect_ = 1;
+        size_ = 1;
+        reg_ = Utils::getIntervalNumFromByte(curr1, 2, 0);
+        w_ = true;
+    }
+}

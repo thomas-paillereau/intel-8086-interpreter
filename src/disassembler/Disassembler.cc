@@ -100,6 +100,11 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // SUB
     // SSB
     // DEC
+    if (((0b11111110 == curr1 || curr1 == 0b11111111)
+         && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
+        || (0b01001000 <= curr1 && curr1 <= 0b01001111)) {
+        return std::make_unique<DecInstr>(content_, position);
+    }
     // NEG
     // CMP
     if ((0b00111000 <= curr1 && curr1 <= 0b00111011)

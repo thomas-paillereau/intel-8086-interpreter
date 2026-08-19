@@ -12,6 +12,8 @@
 /// Arithmetic Instructions -----------------------------------------------------------------------------------------///
 #include "arithmeticInstr/AddInstr.hh"
 
+#include "arithmeticInstr/DecInstr.hh"
+
 #include "arithmeticInstr/CmpInstr.hh"
 
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
