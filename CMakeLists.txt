@@ -12,19 +12,19 @@ add_executable(intel8084Interpreter
         src/disassembler/Disassembler.hh
         src/instructions/Instruction.cc
         src/instructions/Instruction.hh
-        src/instructions/AddInstr.cc
-        src/instructions/AddInstr.hh
-        src/instructions/MovInstr.cc
-        src/instructions/MovInstr.hh
+        src/instructions/ArithmeticInstr/AddInstr.cc
+        src/instructions/ArithmeticInstr/AddInstr.hh
+        src/instructions/dataTransferInstr/MovInstr.cc
+        src/instructions/dataTransferInstr/MovInstr.hh
         src/utils/Utils.cc
         src/utils/Utils.hh
         src/instructions/instruction-header.hh
-        src/instructions/IntInstr.cc
-        src/instructions/IntInstr.hh
-        src/instructions/PushInstr.cc
-        src/instructions/PushInstr.hh
-        src/instructions/PopInstr.cc
-        src/instructions/PopInstr.hh
+        src/instructions/controlTransferInstr/IntInstr.cc
+        src/instructions/controlTransferInstr/IntInstr.hh
+        src/instructions/dataTransferInstr/PushInstr.cc
+        src/instructions/dataTransferInstr/PushInstr.hh
+        src/instructions/dataTransferInstr/PopInstr.cc
+        src/instructions/dataTransferInstr/PopInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

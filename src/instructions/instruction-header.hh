@@ -2,10 +2,13 @@
 
 #include "Instruction.hh"
 
-#include "MovInstr.hh"
-#include "PushInstr.hh"
-#include "PopInstr.hh"
+/// Data Transfer Instructions
+#include "dataTransferInstr/MovInstr.hh"
+#include "dataTransferInstr/PushInstr.hh"
+#include "dataTransferInstr/PopInstr.hh"
 
-#include "AddInstr.hh"
+/// Arithmetic Instructions
+#include "ArithmeticInstr/AddInstr.hh"
 
-#include "IntInstr.hh"
+/// Control Transfer Instructions
+#include "controlTransferInstr/IntInstr.hh"

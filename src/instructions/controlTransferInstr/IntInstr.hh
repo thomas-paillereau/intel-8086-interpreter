@@ -3,7 +3,7 @@
 #include <cstdint>
 #include <vector>
 
-#include "Instruction.hh"
+#include "../Instruction.hh"
 
 class IntInstr : public Instruction {
 public:
