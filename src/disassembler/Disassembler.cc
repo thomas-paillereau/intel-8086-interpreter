@@ -183,7 +183,16 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<JmpInstr>(content_, position);
     }
     // RET
+    if (0b11000011 == curr1
+        || 0b11000010 == curr1
+        || 0b11001011 == curr1
+        || 0b11001010 == curr1) {
+        return std::make_unique<RetInstr>(content_, position);
+    }
     // JE/JZ
+    if (0b01110100 == curr1) {
+        return std::make_unique<JeJzInstr>(content_, position);
+    }
     // JL/JNGE
     if (0b01111100 == curr1) {
         return std::make_unique<JlJngeInstr>(content_, position);
