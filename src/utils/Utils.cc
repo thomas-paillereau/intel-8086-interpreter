@@ -1,18 +1,11 @@
 #include "Utils.hh"
 
-#include <complex>
-
 int Utils::getIntervalNumFromByte(uint8_t n, int left, int right) {
-    int div = 1;
-    if (div != 0)
-        div = static_cast<int>(std::pow(2, right));
-    int mod = static_cast<int>(std::pow(2, left + 1));
-    return (n % mod) / div;
+    int width = left - right + 1;
+    uint8_t mask = (1 << width) - 1;
+    return (n >> right) & mask;
 }
 
 bool Utils::getEnabledBitFromByte(uint8_t n, int pos) {
-    int div = 1;
-    if (div != 0)
-        div = static_cast<int>(std::pow(2, pos));
-    return (n / div) % 2 == 1;
+    return (n & (1 << pos)) != 0;
 }

@@ -1,6 +1,7 @@
 #include "Disassembler.hh"
 
 #include <iomanip>
+#include <iostream>
 #include <memory>
 #include <sstream>
 
@@ -20,7 +21,10 @@ void Disassembler::disassemble() {
     while (pos < header_size_ + content_size_) {
         auto instruction = disassembleInstruction(pos);
         printf("%04x: %-14s", pos - header_size_, getStringFromBytes(pos, instruction->getSize()).c_str());
-        instruction->print();
+        if (pos + instruction->getSize() >= header_size_ + content_size_)
+            std::cout << "(undefined)" << std::endl;
+        else
+            instruction->print();
         pos += instruction->getSize();
     }
 }
@@ -40,7 +44,6 @@ std::string Disassembler::getStringFromBytes(int position, int size) const {
 
 std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) {
     const uint8_t pos1 = content_.at(position);
-    const uint8_t pos2 = content_.at(position + 1);
 
     /// DATA TRANSFER
     // MOV
@@ -54,6 +57,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<MovInstr>(content_, position);
     }
     // PUSH
+    if ((0b01010000 <= pos1 && pos1 <= 0b01010111)
+        || (0b00000110 <= pos1 && pos1 <= 0b00011110)
+        || (pos1 == 0b11111111
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b110)) {
+        return std::make_unique<PushInstr>(content_, position);
+    }
     // POP
     // XCHG
     // IN
@@ -70,7 +79,8 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     /// ARITHMETIC
     // ADD
     if ((pos1 <= 0b00000011)
-        || (0b10000000 <= pos1 && pos1 <= 0b10000011 && Utils::getIntervalNumFromByte(pos2, 5, 3) == 0b000)
+        || (0b10000000 <= pos1 && pos1 <= 0b10000011
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
         || (0b00000100 <= pos1 && pos1 <= 0b00000101)) {
         return std::make_unique<AddInstr>(content_, position);
     }
@@ -141,7 +151,7 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // LOOPNZ/LOOPNE
     // JCXZ
     // INT
-    if (pos1 <= 0b11001101 || pos1 <= 0b11001100) {
+    if (pos1 == 0b11001101 || pos1 == 0b11001100) {
         return std::make_unique<IntInstr>(content_, position);
     }
     // INTO

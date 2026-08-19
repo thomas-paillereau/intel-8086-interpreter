@@ -21,4 +21,6 @@ add_executable(intel8084Interpreter
         src/instructions/instruction-header.hh
         src/instructions/IntInstr.cc
         src/instructions/IntInstr.hh
+        src/instructions/PushInstr.cc
+        src/instructions/PushInstr.hh
 )

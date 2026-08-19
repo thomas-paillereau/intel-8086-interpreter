@@ -1,4 +1,5 @@
 #include "MovInstr.hh"
+
 #include "../utils/Utils.hh"
 
 MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
@@ -11,19 +12,19 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
         size_ = 2;
     } else if (0b11000110 <= curr1 && curr1 <= 0b11000111) {
         effect_ = 1;
-        size_ = 4;
+        size_ = 2;
         info_byte_type_ = DATA;
     } else if (0b10110000 <= curr1 && curr1 <= 0b10111111) {
         effect_ = 2;
-        size_ = 3;
+        size_ = 1;
         info_byte_type_ = DATA;
     } else if (0b10100000 <= curr1 && curr1 <= 0b10100001) {
         effect_ = 3;
-        size_ = 3;
+        size_ = 1;
         info_byte_type_ = ADDR_HL;
     } else if (0b10100010 <= curr1 && curr1 <= 0b10100011) {
         effect_ = 4;
-        size_ = 3;
+        size_ = 1;
         info_byte_type_ = ADDR_HL;
     } else if (curr1 == 0b10001110) {
         effect_ = 5;
@@ -50,20 +51,33 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     // TODO check for other implication for the instruction (reg of size 2)
 
     if (effect_ == 0 || effect_ == 1 || effect_ == 5 || effect_ == 6) {
-        mod_ = Utils::getIntervalNumFromByte(curr1, 7, 6);
-        rm_ = Utils::getIntervalNumFromByte(curr1, 2, 0);
+        mod_ = Utils::getIntervalNumFromByte(curr2, 7, 6);
+        rm_ = Utils::getIntervalNumFromByte(curr2, 2, 0);
     }
 
-    if (effect_ == 1) {
-        info_byte1_ = content.at(position + 2);
-        info_byte2_ = content.at(position + 3);
-    } else if (effect_ == 2) {
-        info_byte1_ = content.at(position + 1);
-        info_byte2_ = content.at(position + 2);
+    if ((mod_ == 0b00 && rm_ == 0b110) || mod_ == 0b10) {
+        disp_low_ = content.at(position + size_);
+        disp_high_ = content.at(position + size_ + 1);
+        size_disp_ = 2;
+        size_ += 2;
+    } else if (mod_ == 0b01) {
+        disp_low_ = content.at(position + size_);
+        size_disp_ = 1;
+        size_ += 1;
+    }
+
+    if (effect_ == 1 || effect_ == 2) {
+        imm_low_ = content.at(position + size_);
+        size_++;
+        if (!s_ && w_) {
+            imm_high_ = content.at(position + size_);
+            size_++;
+        }
     }
 
     if (effect_ == 3 || effect_ == 4) {
-        info_byte1_ = content.at(position + 1);
-        info_byte2_ = content.at(position + 2);
+        imm_low_ = content.at(position + size_ - 2);
+        imm_low_ = content.at(position + size_ - 1);
+        size_ += 2;
     }
 }

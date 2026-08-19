@@ -6,34 +6,25 @@
 #include <sstream>
 
 /// -----------------------------------------------------------------------------------------------------------------///
-/// Main To String function
-
-std::string Instruction::toString() const {
-    if (name_ == "UNDEFINED")
-        return name_;
-
-    std::string res;
-    res += name_;
-    if (mod_ != -1 && rm_ != -1) {
-        res += " " + decodeModRm();
-    } else if (reg_ != -1 && info_byte_type_ == DATA && mod_ == -1 && rm_ == -1) {
-        res += " " + decodeRegImm();
-    } else if (info_byte_type_ == DATA) {
-        res += " " + decodeAccImm();
-    } else if (info_byte_type_ == ADDR_HL) {
-        res += " " + decodeDirectAddr();
-    } else if (info_byte_type_ == DISP) {
-        res += " " + decodeRelative();
-    } else if (info_byte_type_ != NONE) {
-        res += " " + decodeOnlyImm();
-    }
-    return res;
-}
-
-/// -----------------------------------------------------------------------------------------------------------------///
 /// Utils
 
-std::string getRegisterString(int reg, bool w) {
+std::string getRegisterString(int reg, bool w, bool only_2_bits) {
+    if (only_2_bits) {
+        switch (reg) {
+            case 0b000:
+                return "es";
+            case 0b001:
+                return "cs";
+            case 0b010:
+                return "ss";
+            case 0b011:
+                return "ds";
+            case 0b100:
+            default:
+                return "Error";
+        }
+    }
+
     switch (reg) {
         case 0b000:
             return w ? "ax" : "al";
@@ -66,28 +57,55 @@ std::string Uint16ToHexString(uint16_t n, int zero_padding) {
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///
+/// Main To String function
+
+std::string Instruction::toString() const {
+    if (name_ == "(undefined)")
+        return name_;
+
+    std::string res;
+    res += name_;
+    if (mod_ != -1 && rm_ != -1) {
+        res += " " + decodeModRm();
+    } else if (reg_ != -1 && info_byte_type_ == DATA && mod_ == -1 && rm_ == -1) {
+        res += " " + decodeRegImm();
+    } else if (reg_ != -1 && info_byte_type_ == NONE) {
+        res += " " + getRegisterString(reg_, w_, two_bits_reg_);
+    } else if (info_byte_type_ == DATA) {
+        res += " " + decodeAccImm();
+    } else if (info_byte_type_ == ADDR_HL) {
+        res += " " + decodeDirectAddr();
+    } else if (info_byte_type_ == DISP) {
+        res += " " + decodeRelative();
+    } else if (info_byte_type_ != NONE) {
+        res += " " + decodeOnlyImm();
+    }
+    return res;
+}
+
+/// -----------------------------------------------------------------------------------------------------------------///
 /// Decode Mod R/M
 
-std::string decodeDirectMemory(uint8_t info_byte1, uint8_t info_byte2) {
-    uint16_t address = static_cast<uint16_t>(info_byte1) | (static_cast<uint16_t>(info_byte2) << 8);
+std::string decodeDirectMemory(uint8_t imm_low, uint8_t imm_high) {
+    uint16_t address = static_cast<uint16_t>(imm_low) | (static_cast<uint16_t>(imm_high) << 8);
     return "[" + Uint16ToHexString(address, 4) + "]";
 }
 
-std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t info_byte1, uint8_t info_byte2) {
+std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_low, uint8_t disp_high) {
     std::stringstream ss;
     if (mod == 0b01) {
-        int8_t displacement = static_cast<int8_t>(info_byte1);
-        if (displacement >= 0)
+        int8_t displacement = static_cast<int8_t>(disp_low);
+        if (displacement > 0)
             ss << "+" << std::hex << static_cast<int>(displacement);
         else
             ss << std::hex << static_cast<int>(displacement);
     } else if (mod == 0b10) {
         int16_t displacement =
                 static_cast<int16_t>(
-                    static_cast<uint16_t>(info_byte1) |
-                    (static_cast<uint16_t>(info_byte2) << 8)
+                    static_cast<uint16_t>(disp_low) |
+                    (static_cast<uint16_t>(disp_high) << 8)
                 );
-        if (displacement >= 0)
+        if (displacement > 0)
             ss << "+" << std::hex << displacement;
         else
             ss << std::hex << displacement;
@@ -96,9 +114,13 @@ std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t info_b
 }
 
 std::string Instruction::decodeModRm() const {
+    std::string regValue = getRegisterString(reg_, w_, two_bits_reg_);
     if (mod_ == 0b11) {
-        return getRegisterString(rm_, w_);
+        if (d_)
+            return regValue + ", " + getRegisterString(rm_, w_, two_bits_reg_);
+        return getRegisterString(rm_, w_, two_bits_reg_) + ", " + regValue;
     }
+
     std::string operand;
     if (rm_ == 0b000)
         operand = "bx+si";
@@ -113,13 +135,15 @@ std::string Instruction::decodeModRm() const {
     else if (rm_ == 0b101)
         operand = "di";
     else if (rm_ == 0b110) {
-        if (mod_ == 0b000)
-            return decodeDirectMemory(info_byte1_, info_byte2_);
+        if (mod_ == 0b00) {
+            if (d_)
+                return regValue + ", " + decodeDirectMemory(disp_low_, disp_high_);
+            return decodeDirectMemory(disp_low_, disp_high_) + ", " + regValue;
+        }
         operand = "bp";
     } else if (rm_ == 0b111)
         operand = "bx";
-    std::string rmValue = decodeMemoryOperand(operand, mod_, info_byte1_, info_byte2_);
-    std::string regValue = getRegisterString(reg_, w_);
+    std::string rmValue = decodeMemoryOperand(operand, mod_, disp_low_, disp_high_);
     if (d_)
         return regValue + ", " + rmValue;
     return rmValue + ", " + regValue;
@@ -129,10 +153,10 @@ std::string Instruction::decodeModRm() const {
 /// Decode REG Immediate
 
 std::string Instruction::decodeRegImm() const {
-    std::string regString = getRegisterString(reg_, w_);
-    uint16_t rightValue = info_byte1_;
+    std::string regString = getRegisterString(reg_, w_, two_bits_reg_);
+    uint16_t rightValue = imm_low_;
     if (w_)
-        rightValue |= static_cast<uint16_t>(info_byte2_) << 8;
+        rightValue |= static_cast<uint16_t>(imm_high_) << 8;
 
     std::stringstream ss;
     ss << regString << ", " << Uint16ToHexString(rightValue, w_ ? 4 : 2);
@@ -144,9 +168,9 @@ std::string Instruction::decodeRegImm() const {
 
 std::string Instruction::decodeAccImm() const {
     std::string accString = w_ ? "ax" : "al";
-    uint16_t rightValue = info_byte1_;
+    uint16_t rightValue = imm_low_;
     if (w_)
-        rightValue |= static_cast<uint16_t>(info_byte2_) << 8;
+        rightValue |= static_cast<uint16_t>(imm_high_) << 8;
 
     std::stringstream ss;
     ss << accString << ", " << Uint16ToHexString(rightValue, w_ ? 4 : 2);
@@ -157,9 +181,9 @@ std::string Instruction::decodeAccImm() const {
 /// Decode Direct Addr
 
 std::string Instruction::decodeDirectAddr() const {
-    uint16_t address = static_cast<uint16_t>(info_byte1_) | (static_cast<uint16_t>(info_byte2_) << 8);
+    uint16_t address = static_cast<uint16_t>(imm_low_) | (static_cast<uint16_t>(imm_high_) << 8);
     std::string memory = "[" + Uint16ToHexString(address, 4) + "]";
-    std::string reg = getRegisterString(0, w_);
+    std::string reg = getRegisterString(0, w_, two_bits_reg_);
 
     std::stringstream ss;
     if (d_)
@@ -176,10 +200,10 @@ std::string Instruction::decodeRelative() const {
     int16_t displacement;
 
     if (w_) {
-        uint16_t value = static_cast<uint16_t>(info_byte1_) | (static_cast<uint16_t>(info_byte2_) << 8);
+        uint16_t value = static_cast<uint16_t>(imm_low_) | (static_cast<uint16_t>(imm_high_) << 8);
         displacement = static_cast<int16_t>(value);
     } else {
-        displacement = static_cast<int8_t>(info_byte1_);
+        displacement = static_cast<int8_t>(imm_low_);
     }
 
     auto target = static_cast<uint16_t>(position_ + size_ + displacement);
@@ -190,9 +214,9 @@ std::string Instruction::decodeRelative() const {
 /// Decode Immediate Instr
 
 std::string Instruction::decodeOnlyImm() const {
-    uint16_t value = info_byte1_;
+    uint16_t value = imm_low_;
     if (w_)
-        value |= static_cast<uint16_t>(info_byte2_) << 8;
+        value |= static_cast<uint16_t>(imm_high_) << 8;
     return Uint16ToHexString(value, w_ ? 4 : 2);
 }
 

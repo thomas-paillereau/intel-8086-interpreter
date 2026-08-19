@@ -32,6 +32,7 @@ protected:
     /// Info byte present (PORT, OFFSET, SEG, DISP, TYPE)
     std::string decodeOnlyImm() const;
 
+    std::string name_ = "(undefined)";
     int size_ = 1;
     int position_ = 0;
 
@@ -62,8 +63,10 @@ protected:
 
     byte_type info_byte_type_ = NONE;
 
-    uint8_t info_byte1_ = 0b0;
-    uint8_t info_byte2_ = 0b0;
+    uint8_t imm_low_ = 0b0000;
+    uint8_t imm_high_ = 0b0000;
 
-    std::string name_ = "UNDEFINED";
+    uint8_t disp_low_ = 0b0000;
+    uint8_t disp_high_ = 0b0000;
+    int size_disp_ = 0;
 };
