@@ -23,6 +23,7 @@
 
 /// Control Transfer Instructions -----------------------------------------------------------------------------------///
 #include "controlTransferInstr/CallInstr.hh"
+#include "controlTransferInstr/JmpInstr.hh"
 
 #include "controlTransferInstr/JneJnzInstr.hh"
 
