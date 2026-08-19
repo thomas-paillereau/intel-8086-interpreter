@@ -4,6 +4,7 @@
 
 #include "MovInstr.hh"
 #include "PushInstr.hh"
+#include "PopInstr.hh"
 
 #include "AddInstr.hh"
 

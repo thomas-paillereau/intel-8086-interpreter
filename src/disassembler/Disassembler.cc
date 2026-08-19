@@ -64,6 +64,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<PushInstr>(content_, position);
     }
     // POP
+    if ((0b01011000 <= pos1 && pos1 <= 0b01011111)
+        || (pos1 == 0b10001111 && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
+        || (0b00000111 <= pos1 && pos1 <= 0b00011111)) {
+        return std::make_unique<PopInstr>(content_, position);
+    }
+
     // XCHG
     // IN
     // OUT
