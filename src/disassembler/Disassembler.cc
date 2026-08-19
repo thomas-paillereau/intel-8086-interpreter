@@ -163,6 +163,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // JNL/JGE
     // JNLE/JG
     // JNB/JAE
+    if (curr1 == 0b01110011) {
+        return std::make_unique<JnbJnaInstr>(content_, position);
+    }
     // JNBE/JA
     // JNP/JPO
     // JNO

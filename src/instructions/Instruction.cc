@@ -5,6 +5,8 @@
 #include <ostream>
 #include <sstream>
 
+#define HEADER_SIZE 0x20 //TODO find a way to get the HEADER SIZE FROM RunManager
+
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Utils
 
@@ -214,7 +216,7 @@ std::string Instruction::decodeRelative() const {
         displacement = static_cast<int8_t>(imm_low_);
     }
 
-    auto target = static_cast<uint16_t>(position_ + size_ + displacement);
+    auto target = static_cast<uint16_t>(position_ - HEADER_SIZE + size_ + displacement);
     return Uint16ToHexString(target, 4);
 }
 

@@ -21,3 +21,5 @@
 
 /// Control Transfer Instructions -----------------------------------------------------------------------------------///
 #include "controlTransferInstr/IntInstr.hh"
+
+#include "controlTransferInstr/JnbJnaInstr.hh"

@@ -16,9 +16,11 @@ XorInstr::XorInstr(const std::vector<uint8_t> &content, int position) {
     } else if (0b10000000 <= curr1 && curr1 <= 0b10000001) {
         effect_ = 1;
         size_ = 2;
+        info_byte_type_ = DATA;
     } else {
         effect_ = 2;
         size_ = 1;
+        info_byte_type_ = DATA;
     }
 
     if (effect_ == 0 || effect_ == 1) {
