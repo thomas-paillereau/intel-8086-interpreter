@@ -75,6 +75,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // OUT
     // XLAT
     // LEA
+    if (0b10001101 == curr1) {
+        return std::make_unique<LeaInstr>(content_, position);
+    }
     // LDS
     // LES
     // LAHF

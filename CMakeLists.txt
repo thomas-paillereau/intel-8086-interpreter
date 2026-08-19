@@ -27,6 +27,8 @@ add_executable(intel8084Interpreter
         src/instructions/dataTransferInstr/PopInstr.hh
         src/instructions/logicInstr/XorInstr.cc
         src/instructions/logicInstr/XorInstr.hh
+        src/instructions/dataTransferInstr/LeaInstr.cc
+        src/instructions/dataTransferInstr/LeaInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE
