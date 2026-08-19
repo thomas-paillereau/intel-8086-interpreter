@@ -43,30 +43,30 @@ std::string Disassembler::getStringFromBytes(int position, int size) const {
 }
 
 std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) {
-    const uint8_t pos1 = content_.at(position);
+    const uint8_t curr1 = content_.at(position);
 
     /// DATA TRANSFER
     // MOV
-    if ((0b10001000 <= pos1 && pos1 <= 0b10001011)
-        || (0b11000110 <= pos1 && pos1 <= 0b11000111)
-        || (0b10110000 <= pos1 && pos1 <= 0b10111111)
-        || (0b10100000 <= pos1 && pos1 <= 0b10100001)
-        || (0b10100010 <= pos1 && pos1 <= 0b10100011)
-        || (pos1 == 0b10001110)
-        || (pos1 == 0b10001100)) {
+    if ((0b10001000 <= curr1 && curr1 <= 0b10001011)
+        || (0b11000110 <= curr1 && curr1 <= 0b11000111)
+        || (0b10110000 <= curr1 && curr1 <= 0b10111111)
+        || (0b10100000 <= curr1 && curr1 <= 0b10100001)
+        || (0b10100010 <= curr1 && curr1 <= 0b10100011)
+        || (curr1 == 0b10001110)
+        || (curr1 == 0b10001100)) {
         return std::make_unique<MovInstr>(content_, position);
     }
     // PUSH
-    if ((0b01010000 <= pos1 && pos1 <= 0b01010111)
-        || (0b00000110 <= pos1 && pos1 <= 0b00011110)
-        || (pos1 == 0b11111111
+    if ((0b01010000 <= curr1 && curr1 <= 0b01010111)
+        || (0b00000110 <= curr1 && curr1 <= 0b00011110)
+        || (curr1 == 0b11111111
             && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b110)) {
         return std::make_unique<PushInstr>(content_, position);
     }
     // POP
-    if ((0b01011000 <= pos1 && pos1 <= 0b01011111)
-        || (pos1 == 0b10001111 && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
-        || (0b00000111 <= pos1 && pos1 <= 0b00011111)) {
+    if ((0b01011000 <= curr1 && curr1 <= 0b01011111)
+        || (curr1 == 0b10001111 && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
+        || (0b00000111 <= curr1 && curr1 <= 0b00011111)) {
         return std::make_unique<PopInstr>(content_, position);
     }
 
@@ -84,10 +84,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
 
     /// ARITHMETIC
     // ADD
-    if ((pos1 <= 0b00000011)
-        || (0b10000000 <= pos1 && pos1 <= 0b10000011
+    if ((curr1 <= 0b00000011)
+        || (0b10000000 <= curr1 && curr1 <= 0b10000011
             && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
-        || (0b00000100 <= pos1 && pos1 <= 0b00000101)) {
+        || (0b00000100 <= curr1 && curr1 <= 0b00000101)) {
         return std::make_unique<AddInstr>(content_, position);
     }
     // ADC
@@ -123,6 +123,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // TEST
     // OR
     // XOR
+    if ((0b00110000 <= curr1 && curr1 <= 0b00110011)
+        || (0b10000000 <= curr1 && curr1 <= 0b10000001
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b110)
+        || (0b00110100 <= curr1 && curr1 <= 0b00110101)) {
+        return std::make_unique<XorInstr>(content_, position);
+    }
 
     /// STRING MANIPULATION
     // REP
@@ -157,7 +163,7 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // LOOPNZ/LOOPNE
     // JCXZ
     // INT
-    if (pos1 == 0b11001101 || pos1 == 0b11001100) {
+    if (curr1 == 0b11001101 || curr1 == 0b11001100) {
         return std::make_unique<IntInstr>(content_, position);
     }
     // INTO

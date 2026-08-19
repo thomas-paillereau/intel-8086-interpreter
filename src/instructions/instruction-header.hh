@@ -8,7 +8,12 @@
 #include "dataTransferInstr/PopInstr.hh"
 
 /// Arithmetic Instructions
-#include "ArithmeticInstr/AddInstr.hh"
+#include "arithmeticInstr/AddInstr.hh"
+
+/// Logic Instructions
+#include "logicInstr/XorInstr.hh"
+
+/// String Manipulation Instructions
 
 /// Control Transfer Instructions
 #include "controlTransferInstr/IntInstr.hh"
