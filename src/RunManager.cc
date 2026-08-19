@@ -46,9 +46,9 @@ RunManager::RunManager(int argc, char **argv) {
     // Getting the size of instruction section
     instr_section_size_ =
             content_.at(8) % 256 * static_cast<int>(std::pow(256, 0))
-            + content_.at(7) % 256 * static_cast<int>(std::pow(256, 1))
-            + content_.at(6) % 256 * static_cast<int>(std::pow(256, 2))
-            + content_.at(5) % 256 * static_cast<int>(std::pow(256, 3));
+            + content_.at(9) % 256 * static_cast<int>(std::pow(256, 1))
+            + content_.at(10) % 256 * static_cast<int>(std::pow(256, 2))
+            + content_.at(11) % 256 * static_cast<int>(std::pow(256, 3));
 }
 
 void RunManager::run() {

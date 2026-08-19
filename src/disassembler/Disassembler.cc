@@ -207,6 +207,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // CLI
     // STI
     // HLT
+    if (curr1 == 0b11110100) {
+        return std::make_unique<HltInstr>(content_, position);
+    }
     // WAIT
     // ESC
     // LOCK

@@ -29,3 +29,6 @@
 #include "controlTransferInstr/JnbJnaInstr.hh"
 
 #include "controlTransferInstr/IntInstr.hh"
+
+/// Processor Control Instructions
+#include "processorControlInstr/HltInstr.hh"
