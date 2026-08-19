@@ -16,6 +16,9 @@ public:
     // TODO virtual void exec();
 
 protected:
+    /// Implicit
+    std::string decodeImplicit() const;
+
     /// Mod + R/M
     std::string decodeModRm() const;
 

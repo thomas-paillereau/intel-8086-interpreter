@@ -72,6 +72,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
 
     // XCHG
     // IN
+    if (0b11100100 == curr1 || 0b11100101 == curr1
+        || 0b11101100 == curr1 || 0b11101101 == curr1) {
+        return std::make_unique<InInstr>(content_, position);
+    }
     // OUT
     // XLAT
     // LEA

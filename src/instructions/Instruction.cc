@@ -74,7 +74,9 @@ std::string Instruction::toString() const {
 
     std::string res;
     res += name_;
-    if (mod_ != -1 && rm_ != -1) {
+    if (name_ == "in" || name_ == "out") {
+        res += " " + decodeImplicit();
+    } else if (mod_ != -1 && rm_ != -1) {
         res += " " + decodeModRm();
     } else if (reg_ != -1 && info_byte_type_ == DATA && mod_ == -1 && rm_ == -1) {
         res += " " + decodeRegImm();
@@ -90,6 +92,21 @@ std::string Instruction::toString() const {
         res += " " + decodeOnlyImm();
     }
     return res;
+}
+
+/// -----------------------------------------------------------------------------------------------------------------///
+/// Implicit
+
+std::string Instruction::decodeImplicit() const {
+    std::stringstream ss;
+    if (name_ == "in" || name_ == "out") {
+        if (effect_ == 0) {
+            ss << "ax, " << std::hex << static_cast<int>(imm_low_);
+        } else {
+            ss << "al, dx";
+        }
+    }
+    return ss.str();
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///

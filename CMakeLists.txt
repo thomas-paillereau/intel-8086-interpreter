@@ -55,6 +55,8 @@ add_executable(intel8084Interpreter
         src/instructions/controlTransferInstr/RetInstr.hh
         src/instructions/logicInstr/AndInstr.cc
         src/instructions/logicInstr/AndInstr.hh
+        src/instructions/dataTransferInstr/InInstr.cc
+        src/instructions/dataTransferInstr/InInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

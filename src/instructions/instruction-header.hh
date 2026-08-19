@@ -7,6 +7,8 @@
 #include "dataTransferInstr/PushInstr.hh"
 #include "dataTransferInstr/PopInstr.hh"
 
+#include "dataTransferInstr/InInstr.hh"
+
 #include "dataTransferInstr/LeaInstr.hh"
 
 /// Arithmetic Instructions -----------------------------------------------------------------------------------------///
