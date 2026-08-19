@@ -181,6 +181,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // RET
     // JE/JZ
     // JL/JNGE
+    if (0b01111100 == curr1) {
+        return std::make_unique<JlJngeInstr>(content_, position);
+    }
     // JLE/JNG
     // JB/JNAE
     // JBE/JNA
