@@ -103,21 +103,20 @@ std::string decodeDirectMemory(uint8_t imm_low, uint8_t imm_high) {
 std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_low, uint8_t disp_high) {
     std::stringstream ss;
     if (mod == 0b01) {
-        int8_t displacement = static_cast<int8_t>(disp_low);
-        if (displacement > 0)
-            ss << "+" << std::hex << static_cast<int>(displacement);
+        int displacement = static_cast<int8_t>(disp_low);
+        if (displacement >= 0)
+            ss << "+" << std::hex << displacement;
         else
-            ss << std::hex << static_cast<int>(displacement);
+            ss << "-" << std::hex << -displacement;
     } else if (mod == 0b10) {
-        int16_t displacement =
-                static_cast<int16_t>(
-                    static_cast<uint16_t>(disp_low) |
-                    (static_cast<uint16_t>(disp_high) << 8)
-                );
+        int displacement = static_cast<int16_t>(
+            static_cast<uint16_t>(disp_low) |
+            (static_cast<uint16_t>(disp_high) << 8)
+        );
         if (displacement > 0)
             ss << "+" << std::hex << displacement;
         else
-            ss << std::hex << displacement;
+            ss << "-" << std::hex << displacement;
     }
     return "[" + base + ss.str() + "]";
 }
