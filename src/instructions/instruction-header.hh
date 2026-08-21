@@ -22,6 +22,8 @@
 #include "arithmeticInstr/NegInstr.hh"
 #include "arithmeticInstr/CmpInstr.hh"
 
+#include "arithmeticInstr/MulInstr.hh"
+
 #include "arithmeticInstr/CbwInstr.hh"
 #include "arithmeticInstr/CwdInstr.hh"
 
@@ -41,6 +43,8 @@
 #include "controlTransferInstr/RetInstr.hh"
 #include "controlTransferInstr/JeJzInstr.hh"
 #include "controlTransferInstr/JlJngeInstr.hh"
+#include "controlTransferInstr/JlejngInstr.hh"
+#include "controlTransferInstr/JbJnaeInstr.hh"
 
 #include "controlTransferInstr/JneJnzInstr.hh"
 #include "controlTransferInstr/JnlJgeInstr.hh"

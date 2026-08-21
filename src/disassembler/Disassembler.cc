@@ -142,6 +142,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // AAS
     // DAS
     // MUL
+    if ((curr1 == 0b11110110 || curr1 == 0b11110111)
+        && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b100) {
+        return std::make_unique<MulInstr>(content_, position);
+    }
     // IMUL
     // AAM
     // DIV
@@ -242,7 +246,13 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<JlJngeInstr>(content_, position);
     }
     // JLE/JNG
+    if (0b01111110 == curr1) {
+        return std::make_unique<JlejngInstr>(content_, position);
+    }
     // JB/JNAE
+    if (0b01110010 == curr1) {
+        return std::make_unique<JbJnaeInstr>(content_, position);
+    }
     // JBE/JNA
     // JP/JPE
     // JO
