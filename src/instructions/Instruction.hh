@@ -69,11 +69,12 @@ protected:
     enum byte_type {
         NONE,
         DATA,
+        DATA_HL,
         ADDR_HL,
         PORT,
+        DISP,
         DISP_HL,
         OFFSET_HL,
-        DISP,
         TYPE,
     };
 

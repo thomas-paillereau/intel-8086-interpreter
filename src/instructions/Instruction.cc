@@ -89,7 +89,8 @@ void Instruction::addInfoBytes(const std::vector<uint8_t> &content, int position
             imm_high_ = content.at(position + size_);
             size_++;
         }
-    } else if (info_byte_type_ == ADDR_HL || info_byte_type_ == DISP_HL || info_byte_type_ == OFFSET_HL) {
+    } else if (info_byte_type_ == ADDR_HL || info_byte_type_ == DISP_HL
+               || info_byte_type_ == OFFSET_HL || info_byte_type_ == DATA_HL) {
         imm_low_ = content.at(position + size_);
         imm_high_ = content.at(position + size_ + 1);
         size_ += 2;
@@ -103,7 +104,7 @@ void Instruction::addInfoBytes(const std::vector<uint8_t> &content, int position
 /// Main functions of string generation
 
 void Instruction::setZeroPadding() {
-    if (mod_ != -1 && rm_ != -1 && reg_ == -1 && !w_)
+    if (reg_ == -1 && !w_)
         padding_ = 0;
     else if (!s_ && w_)
         padding_ = 4;
@@ -117,7 +118,7 @@ std::string Instruction::toString() const {
 
     std::string res;
     res += name_;
-    if (name_ == "in" || name_ == "out") {
+    if (name_ == "in" || name_ == "out" || (name_ == "xchg" && effect_ == 1)) {
         res += " " + decodeImplicit();
     } else if (mod_ != -1 && rm_ != -1) {
         res += " " + decodeModRm();
@@ -148,6 +149,8 @@ std::string Instruction::decodeImplicit() const {
         } else {
             ss << "al, dx";
         }
+    } else if (name_ == "xchg") {
+        ss << getRegisterString(reg_, w_, false) + ", ax";
     }
     return ss.str();
 }
@@ -267,7 +270,7 @@ std::string Instruction::decodeAccImm() const {
     uint16_t rightValue = uint8ToUint16(imm_low_, imm_high_, w_);
 
     std::stringstream ss;
-    ss << accString << ", " << Uint16ToHexString(rightValue, w_ ? 4 : 2);
+    ss << accString << ", " << Uint16ToHexString(rightValue, padding_);
     return ss.str();
 }
 

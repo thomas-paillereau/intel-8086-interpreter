@@ -43,6 +43,7 @@
 
 /// String Manipulation Instructions --------------------------------------------------------------------------------///
 #include "stringManipulationInstr/RepInstr.hh"
+#include "stringManipulationInstr/MovsInstr.hh"
 
 /// Control Transfer Instructions -----------------------------------------------------------------------------------///
 #include "controlTransferInstr/CallInstr.hh"

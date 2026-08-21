@@ -105,6 +105,8 @@ add_executable(intel8084Interpreter
         src/instructions/controlTransferInstr/LoopInstr.hh
         src/instructions/logicInstr/SarInstr.cc
         src/instructions/logicInstr/SarInstr.hh
+        src/instructions/stringManipulationInstr/MovsInstr.cc
+        src/instructions/stringManipulationInstr/MovsInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

@@ -11,7 +11,7 @@ public:
 
     void disassemble();
 
-    std::unique_ptr<Instruction> disassembleInstruction(int position);
+    std::unique_ptr<Instruction> disassembleInstruction(int position) const;
 
 private:
     std::string getStringFromBytes(int position, int size) const;

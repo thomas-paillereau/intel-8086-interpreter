@@ -13,7 +13,7 @@ XchgInstr::XchgInstr(const std::vector<uint8_t> &content, int position) {
         size_ = 2;
         w_ = Utils::getEnabledBitFromByte(curr1, 0);
         mod_ = Utils::getIntervalNumFromByte(curr2, 7, 6);
-        reg_ = Utils::getIntervalNumFromByte(curr1, 5, 3);
+        reg_ = Utils::getIntervalNumFromByte(curr2, 5, 3);
         rm_ = Utils::getIntervalNumFromByte(curr2, 2, 0);
     } else {
         effect_ = 1;

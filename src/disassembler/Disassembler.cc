@@ -43,7 +43,7 @@ std::string Disassembler::getStringFromBytes(int position, int size) const {
     return ss.str();
 }
 
-std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) {
+std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) const {
     const uint8_t curr1 = content_.at(position);
 
     /// DATA TRANSFER
@@ -234,6 +234,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<RepInstr>(content_, position);
     }
     // MOVS
+    if (0b10100100 == curr1 || 0b10100101 == curr1) {
+        return std::make_unique<MovsInstr>(content_, position);
+    }
     // CMPS
     // SCAS
     // LODS
