@@ -36,27 +36,7 @@ JmpInstr::JmpInstr(const std::vector<uint8_t> &content, int position) {
         uint8_t curr2 = content.at(position + 1);
         mod_ = Utils::getIntervalNumFromByte(curr2, 7, 6);
         rm_ = Utils::getIntervalNumFromByte(curr2, 2, 0);
-
-        if ((mod_ == 0b00 && rm_ == 0b110) || mod_ == 0b10) {
-            disp_low_ = content.at(position + size_);
-            disp_high_ = content.at(position + size_ + 1);
-            size_disp_ = 2;
-            size_ += 2;
-        } else if (mod_ == 0b01) {
-            disp_low_ = content.at(position + size_);
-            size_disp_ = 1;
-            size_ += 1;
-        }
     }
 
-    if (effect_ == 1) {
-        imm_low_ = content.at(position + size_);
-        size_++;
-    }
-
-    if (effect_ == 0 || effect_ == 3) {
-        imm_low_ = content.at(position + size_);
-        imm_high_ = content.at(position + size_ + 1);
-        size_ += 2;
-    }
+    addInfoBytes(content, position);
 }

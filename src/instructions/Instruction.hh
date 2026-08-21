@@ -2,10 +2,13 @@
 
 #include <cstdint>
 #include <string>
+#include <vector>
 
 class Instruction {
 public:
     Instruction() = default;
+
+    void setZeroPadding();
 
     std::string toString() const;
 
@@ -16,6 +19,9 @@ public:
     // TODO virtual void exec();
 
 protected:
+    /// General function to add imm and disp bytes to the instruction
+    void addInfoBytes(const std::vector<uint8_t> &content, int position);
+
     /// Implicit
     std::string decodeImplicit() const;
 
@@ -36,24 +42,29 @@ protected:
     /// Info byte present (PORT, OFFSET, SEG, DISP, TYPE)
     std::string decodeOnlyImm() const;
 
+    /// Basic instruction args
     std::string name_ = "(undefined)";
     int size_ = 1;
     int position_ = 0;
 
+    /// Which type of the instruction it is
     int effect_ = 0;
 
+    /// One bit opcode flags
     bool w_ = false;
     bool d_ = false;
     bool s_ = false;
     bool v_ = false;
     bool v_used_ = false;
 
+    /// Multiple bit opcode flags (2 or 3)
     int mod_ = -1;
     int reg_ = -1;
     int rm_ = -1;
 
     bool two_bits_reg_ = false;
 
+    /// 1 byte opcode flags
     enum byte_type {
         NONE,
         DATA,
@@ -62,7 +73,6 @@ protected:
         DISP_HL,
         OFFSET_HL,
         DISP,
-        DATA_HL,
         TYPE,
     };
 
@@ -74,4 +84,7 @@ protected:
     uint8_t disp_low_ = 0b0000;
     uint8_t disp_high_ = 0b0000;
     int size_disp_ = 0;
+
+    /// Printing utilities
+    int padding_ = -1;
 };

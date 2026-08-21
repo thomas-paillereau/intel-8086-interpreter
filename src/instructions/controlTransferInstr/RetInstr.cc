@@ -12,19 +12,17 @@ RetInstr::RetInstr(const std::vector<uint8_t> &content, int position) {
     } else if (0b11000010 == curr1) {
         effect_ = 1;
         size_ = 1;
+        w_ = true;
+        info_byte_type_ = DATA;
     } else if (0b11001011 == curr1) {
         effect_ = 2;
         size_ = 1;
     } else {
         effect_ = 3;
         size_ = 1;
+        w_ = true;
+        info_byte_type_ = DATA;
     }
 
-    if (effect_ == 1 || effect_ == 3) {
-        info_byte_type_ = DATA;
-        w_ = true;
-        imm_low_ = content.at(position_ + 1);
-        imm_high_ = content.at(position_ + 2);
-        size_ = 2;
-    }
+    addInfoBytes(content, position);
 }

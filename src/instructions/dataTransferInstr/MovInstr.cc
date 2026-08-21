@@ -10,6 +10,7 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     if (0b10001000 <= curr1 && curr1 <= 0b10001011) {
         effect_ = 0;
         size_ = 2;
+        d_ = Utils::getEnabledBitFromByte(curr1, 1);
     } else if (0b11000110 <= curr1 && curr1 <= 0b11000111) {
         effect_ = 1;
         size_ = 2;
@@ -40,44 +41,16 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
         w_ = Utils::getEnabledBitFromByte(curr1, 3);
 
     if (effect_ == 0)
-        d_ = Utils::getEnabledBitFromByte(curr1, 1);
-
-    if (effect_ == 0)
         reg_ = Utils::getIntervalNumFromByte(curr2, 5, 3);
     else if (effect_ == 2)
         reg_ = Utils::getIntervalNumFromByte(curr1, 2, 0);
     else if (effect_ == 5 || effect_ == 6)
         reg_ = Utils::getIntervalNumFromByte(curr2, 4, 3);
-    // TODO check for other implication for the instruction (reg of size 2)
 
     if (effect_ == 0 || effect_ == 1 || effect_ == 5 || effect_ == 6) {
         mod_ = Utils::getIntervalNumFromByte(curr2, 7, 6);
         rm_ = Utils::getIntervalNumFromByte(curr2, 2, 0);
     }
 
-    if ((mod_ == 0b00 && rm_ == 0b110) || mod_ == 0b10) {
-        disp_low_ = content.at(position + size_);
-        disp_high_ = content.at(position + size_ + 1);
-        size_disp_ = 2;
-        size_ += 2;
-    } else if (mod_ == 0b01) {
-        disp_low_ = content.at(position + size_);
-        size_disp_ = 1;
-        size_ += 1;
-    }
-
-    if (effect_ == 1 || effect_ == 2) {
-        imm_low_ = content.at(position + size_);
-        size_++;
-        if (!s_ && w_) {
-            imm_high_ = content.at(position + size_);
-            size_++;
-        }
-    }
-
-    if (effect_ == 3 || effect_ == 4) {
-        imm_low_ = content.at(position + size_ - 2);
-        imm_low_ = content.at(position + size_ - 1);
-        size_ += 2;
-    }
+    addInfoBytes(content, position);
 }

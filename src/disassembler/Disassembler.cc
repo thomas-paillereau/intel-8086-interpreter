@@ -20,6 +20,7 @@ void Disassembler::disassemble() {
     int pos = header_size_;
     while (pos < header_size_ + content_size_) {
         auto instruction = disassembleInstruction(pos);
+        instruction->setZeroPadding();
         printf("%04x: %-14s", pos - header_size_, getStringFromBytes(pos, instruction->getSize()).c_str());
         if (pos + instruction->getSize() >= header_size_ + content_size_)
             std::cout << "(undefined)" << std::endl;

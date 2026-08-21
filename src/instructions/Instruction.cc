@@ -5,6 +5,8 @@
 #include <ostream>
 #include <sstream>
 
+#include "utils/Utils.hh"
+
 #define HEADER_SIZE 0x20 //TODO find a way to get the HEADER SIZE FROM RunManager
 
 /// -----------------------------------------------------------------------------------------------------------------///
@@ -66,7 +68,49 @@ std::string Uint16ToHexString(uint16_t n, int zero_padding) {
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///
-/// Main To String function
+/// Function to add displacement and immediate bytes for the instructions
+
+void Instruction::addInfoBytes(const std::vector<uint8_t> &content, int position) {
+    if ((mod_ == 0b00 && rm_ == 0b110) || mod_ == 0b10) {
+        disp_low_ = content.at(position + size_);
+        disp_high_ = content.at(position + size_ + 1);
+        size_disp_ = 2;
+        size_ += 2;
+    } else if (mod_ == 0b01) {
+        disp_low_ = content.at(position + size_);
+        size_disp_ = 1;
+        size_ += 1;
+    }
+
+    if (info_byte_type_ == DATA) {
+        imm_low_ = content.at(position + size_);
+        size_++;
+        if (!s_ && w_) {
+            imm_high_ = content.at(position + size_);
+            size_++;
+        }
+    } else if (info_byte_type_ == ADDR_HL || info_byte_type_ == DISP_HL || info_byte_type_ == OFFSET_HL) {
+        imm_low_ = content.at(position + size_);
+        imm_high_ = content.at(position + size_ + 1);
+        size_ += 2;
+    } else if (info_byte_type_ == PORT || info_byte_type_ == DISP || info_byte_type_ == TYPE) {
+        imm_low_ = content.at(position + size_);
+        size_++;
+    }
+}
+
+/// -----------------------------------------------------------------------------------------------------------------///
+/// Main functions of string generation
+
+void Instruction::setZeroPadding() {
+    if (padding_ != -1)
+        return;
+
+    if (!s_ && w_)
+        padding_ = 4;
+    else
+        padding_ = 2;
+}
 
 std::string Instruction::toString() const {
     if (name_ == "(undefined)")
@@ -144,8 +188,8 @@ std::string Instruction::decodeModRm() const {
         regValue = getRegisterString(reg_, w_, two_bits_reg_);
     else if (v_used_)
         regValue = v_ ? "cl" : "1";
-    else if (info_byte_type_ != NONE) //TODO check if this work not only with /r and /7
-        regValue = Uint16ToHexString(uint8ToUint16(imm_low_, imm_high_, w_), w_ ? 4 : 2);
+    else if (info_byte_type_ != NONE)
+        regValue = Uint16ToHexString(uint8ToUint16(imm_low_, imm_high_, w_), padding_); // TODO CHECK
 
     if (mod_ == 0b11) {
         if (regValue.empty())

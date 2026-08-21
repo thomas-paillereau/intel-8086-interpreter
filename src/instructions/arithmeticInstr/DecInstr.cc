@@ -21,4 +21,6 @@ DecInstr::DecInstr(const std::vector<uint8_t> &content, int position) {
         reg_ = Utils::getIntervalNumFromByte(curr1, 2, 0);
         w_ = true;
     }
+
+    addInfoBytes(content, position);
 }
