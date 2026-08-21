@@ -10,7 +10,7 @@ RepInstr::RepInstr(const std::vector<uint8_t> &content, int position) {
     z_ = Utils::getEnabledBitFromByte(content.at(position_), 0);
 
     std::unique_ptr<Instruction> instr = Disassembler::disassembleInstruction(content, position + 1);
-    // TODO add stoking of instruction
+    // TODO add stoking of instruction for the execution
     name_ += " " + instr->toString();
     size_ += instr->getSize();
 }

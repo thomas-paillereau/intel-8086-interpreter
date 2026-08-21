@@ -6,6 +6,7 @@
 #include <sstream>
 
 #include "disassembler/Disassembler.hh"
+#include "exceptions/NonExistentRegisterException.hh"
 
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Utils
@@ -23,7 +24,8 @@ std::string getRegisterString(int reg, bool w, bool only_2_bits) {
                 return "ds";
             case 0b100:
             default:
-                return "Error";
+                throw NonExistentRegisterException(
+                    ("No Segment was found for the int: " + std::to_string(reg)).c_str());
         }
     }
 
@@ -45,7 +47,7 @@ std::string getRegisterString(int reg, bool w, bool only_2_bits) {
         case 0b111:
             return w ? "di" : "bh";
         default:
-            return "Error"; // TODO make error
+            throw NonExistentRegisterException(("No register was found for the int: " + std::to_string(reg)).c_str());
     }
 }
 

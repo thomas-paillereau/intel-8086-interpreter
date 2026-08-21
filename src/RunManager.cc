@@ -68,11 +68,15 @@ RunManager::RunManager(int argc, char **argv) {
 }
 
 void RunManager::run() {
-    if (interpreter_enabled_)
-        std::cout << "Interpreter " << std::endl; //TODO
-    else {
-        Disassembler::init(instr_section_size_, HEADER_SIZE);
-        Disassembler::disassemble(content_);
+    try {
+        if (interpreter_enabled_)
+            std::cout << "Interpreter " << std::endl; //TODO
+        else {
+            Disassembler::init(instr_section_size_, HEADER_SIZE);
+            Disassembler::disassemble(content_);
+        }
+    } catch (std::exception &e) {
+        std::cerr << "Error : " << e.what() << std::endl;
     }
 }
 

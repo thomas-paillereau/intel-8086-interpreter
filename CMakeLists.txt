@@ -106,6 +106,8 @@ add_executable(intel8084Interpreter
         src/instructions/logicInstr/SarInstr.hh
         src/instructions/stringManipulationInstr/MovsInstr.cc
         src/instructions/stringManipulationInstr/MovsInstr.hh
+        src/exceptions/NonExistentRegisterException.hh
+        src/exceptions/Exception.hh
         #src/interpreter/Cpu.cc
         #src/interpreter/Cpu.hh
 )

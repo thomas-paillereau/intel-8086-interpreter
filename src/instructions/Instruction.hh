@@ -16,8 +16,6 @@ public:
 
     int getSize() const;
 
-    // TODO virtual void exec();
-
 protected:
     /// General function to add imm and disp bytes to the instruction
     void addInfoBytes(const std::vector<uint8_t> &content, int position);
