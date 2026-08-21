@@ -54,6 +54,7 @@ protected:
     bool w_ = false;
     bool d_ = false;
     bool s_ = false;
+    bool z_ = false;
     bool v_ = false;
     bool v_used_ = false;
 

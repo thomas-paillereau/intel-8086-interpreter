@@ -254,6 +254,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<JbJnaeInstr>(content_, position);
     }
     // JBE/JNA
+    if (0b01110110 == curr1) {
+        return std::make_unique<JbeJnaInstr>(content_, position);
+    }
     // JP/JPE
     // JO
     // JS
@@ -271,9 +274,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     }
     // JNB/JAE
     if (curr1 == 0b01110011) {
-        return std::make_unique<JnbJnaInstr>(content_, position);
+        return std::make_unique<JnbJaeInstr>(content_, position);
     }
     // JNBE/JA
+    if (curr1 == 0b01110111) {
+        return std::make_unique<JnbeJaInstr>(content_, position);
+    }
     // JNP/JPO
     // JNO
     // JNS

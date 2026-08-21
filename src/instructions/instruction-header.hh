@@ -45,12 +45,13 @@
 #include "controlTransferInstr/JlJngeInstr.hh"
 #include "controlTransferInstr/JlejngInstr.hh"
 #include "controlTransferInstr/JbJnaeInstr.hh"
+#include "controlTransferInstr/JbeJnaInstr.hh"
 
 #include "controlTransferInstr/JneJnzInstr.hh"
 #include "controlTransferInstr/JnlJgeInstr.hh"
 #include "controlTransferInstr/JnleJgInstr.hh"
-
-#include "controlTransferInstr/JnbJnaInstr.hh"
+#include "controlTransferInstr/JnbJaeInstr.hh"
+#include "controlTransferInstr/JnbeJaInstr.hh"
 
 #include "controlTransferInstr/IntInstr.hh"
 
