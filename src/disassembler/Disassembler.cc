@@ -58,15 +58,15 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     }
     // PUSH
     if ((0b01010000 <= curr1 && curr1 <= 0b01010111)
-        || (0b00000110 <= curr1 && curr1 <= 0b00011110)
         || (curr1 == 0b11111111
-            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b110)) {
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b110)
+        || (0b00000110 == curr1 || 0b00001110 == curr1 || 0b00010110 == curr1 || 0b00011110 == curr1)) {
         return std::make_unique<PushInstr>(content_, position);
     }
     // POP
     if ((0b01011000 <= curr1 && curr1 <= 0b01011111)
         || (curr1 == 0b10001111 && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
-        || (0b00000111 <= curr1 && curr1 <= 0b00011111)) {
+        || (0b00000111 == curr1 || 0b00001111 == curr1 || 0b00010111 == curr1 || 0b00011111 == curr1)) {
         return std::make_unique<PopInstr>(content_, position);
     }
 
@@ -102,7 +102,19 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // AAA
     // BAA
     // SUB
+    if ((0b00101000 <= curr1 && curr1 <= 0b00101011)
+        || (0b10000000 <= curr1 && curr1 <= 0b10000011
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b101)
+        || (0b0010110 <= curr1 && curr1 <= 0b0010111)) {
+        return std::make_unique<SubInstr>(content_, position);
+    }
     // SSB
+    if ((0b00011000 <= curr1 && curr1 <= 0b00011011)
+        || (0b10000000 <= curr1 && curr1 <= 0b10000011
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b011)
+        || (0b0001110 <= curr1 && curr1 <= 0b0001111)) {
+        return std::make_unique<SbbInstr>(content_, position);
+    }
     // DEC
     if (((0b11111110 == curr1 || curr1 == 0b11111111)
          && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
