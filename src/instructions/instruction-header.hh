@@ -20,6 +20,8 @@
 #include "arithmeticInstr/NegInstr.hh"
 #include "arithmeticInstr/CmpInstr.hh"
 
+#include "arithmeticInstr/CbwInstr.hh"
+
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
 #include "logicInstr/ShlSalInstr.hh"
 
