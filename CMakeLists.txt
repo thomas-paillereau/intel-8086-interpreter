@@ -61,6 +61,8 @@ add_executable(intel8084Interpreter
         src/instructions/arithmeticInstr/SbbInstr.hh
         src/instructions/arithmeticInstr/SubInstr.cc
         src/instructions/arithmeticInstr/SubInstr.hh
+        src/instructions/logicInstr/OrInstr.cc
+        src/instructions/logicInstr/OrInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

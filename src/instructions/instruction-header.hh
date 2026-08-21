@@ -25,7 +25,7 @@
 
 #include "logicInstr/AndInstr.hh"
 #include "logicInstr/TestInstr.hh"
-
+#include "logicInstr/OrInstr.hh"
 #include "logicInstr/XorInstr.hh"
 
 /// String Manipulation Instructions --------------------------------------------------------------------------------///

@@ -1,23 +1,22 @@
-#include "SubInstr.hh"
+#include "OrInstr.hh"
 
 #include "utils/Utils.hh"
 
-SubInstr::SubInstr(const std::vector<uint8_t> &content, int position) {
-    name_ = "sub";
+OrInstr::OrInstr(const std::vector<uint8_t> &content, int position) {
+    name_ = "or";
     position_ = position;
 
     uint8_t curr1 = content.at(position);
 
     w_ = Utils::getEnabledBitFromByte(curr1, 0);
-    if (0b00101000 <= curr1 && curr1 <= 0b00101011) {
+    if (0b00001000 <= curr1 && curr1 <= 0b00001011) {
         effect_ = 0;
         size_ = 2;
         d_ = Utils::getEnabledBitFromByte(curr1, 1);
-    } else if (0b10000000 <= curr1 && curr1 <= 0b10000011) {
+    } else if (0b10000000 <= curr1 && curr1 <= 0b10000001) {
         effect_ = 1;
         size_ = 2;
         info_byte_type_ = DATA;
-        s_ = Utils::getEnabledBitFromByte(curr1, 1);
     } else {
         effect_ = 2;
         size_ = 1;
@@ -46,7 +45,7 @@ SubInstr::SubInstr(const std::vector<uint8_t> &content, int position) {
     if (effect_ == 1 || effect_ == 2) {
         imm_low_ = content.at(position + size_);
         size_++;
-        if (!s_ && w_) {
+        if (w_) {
             imm_high_ = content.at(position + size_);
             size_++;
         }
