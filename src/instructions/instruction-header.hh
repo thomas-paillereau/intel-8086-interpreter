@@ -44,6 +44,7 @@
 
 #include "controlTransferInstr/JneJnzInstr.hh"
 #include "controlTransferInstr/JnlJgeInstr.hh"
+#include "controlTransferInstr/JnleJgInstr.hh"
 
 #include "controlTransferInstr/JnbJnaInstr.hh"
 

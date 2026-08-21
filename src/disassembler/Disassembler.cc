@@ -111,7 +111,7 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     if ((0b00101000 <= curr1 && curr1 <= 0b00101011)
         || (0b10000000 <= curr1 && curr1 <= 0b10000011
             && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b101)
-        || (0b0010110 <= curr1 && curr1 <= 0b0010111)) {
+        || (0b00101100 <= curr1 && curr1 <= 0b00101101)) {
         return std::make_unique<SubInstr>(content_, position);
     }
     // SSB
@@ -256,6 +256,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<JnlJgeInstr>(content_, position);
     }
     // JNLE/JG
+    if (curr1 == 0b01111111) {
+        return std::make_unique<JnleJgInstr>(content_, position);
+    }
     // JNB/JAE
     if (curr1 == 0b01110011) {
         return std::make_unique<JnbJnaInstr>(content_, position);

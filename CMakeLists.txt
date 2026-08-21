@@ -73,6 +73,8 @@ add_executable(intel8084Interpreter
         src/instructions/arithmeticInstr/CwdInstr.hh
         src/instructions/arithmeticInstr/IncInstr.cc
         src/instructions/arithmeticInstr/IncInstr.hh
+        src/instructions/controlTransferInstr/JnleJgInstr.cc
+        src/instructions/controlTransferInstr/JnleJgInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE
