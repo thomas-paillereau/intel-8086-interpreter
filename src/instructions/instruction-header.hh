@@ -6,7 +6,7 @@
 #include "dataTransferInstr/MovInstr.hh"
 #include "dataTransferInstr/PushInstr.hh"
 #include "dataTransferInstr/PopInstr.hh"
-
+#include "dataTransferInstr/XchgInstr.hh"
 #include "dataTransferInstr/InInstr.hh"
 
 #include "dataTransferInstr/LeaInstr.hh"
@@ -24,12 +24,16 @@
 
 #include "arithmeticInstr/MulInstr.hh"
 
+#include "arithmeticInstr/DivInstr.hh"
+
 #include "arithmeticInstr/CbwInstr.hh"
 #include "arithmeticInstr/CwdInstr.hh"
 
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
 #include "logicInstr/ShlSalInstr.hh"
 #include "logicInstr/ShrInstr.hh"
+
+#include "logicInstr/RclInstr.hh"
 
 #include "logicInstr/AndInstr.hh"
 #include "logicInstr/TestInstr.hh"

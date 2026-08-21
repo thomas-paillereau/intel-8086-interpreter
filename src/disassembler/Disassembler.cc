@@ -72,6 +72,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     }
 
     // XCHG
+    if (0b10000110 == curr1 || 0b10000111 == curr1
+        || (0b10010000 <= curr1 && curr1 <= 0b10010111)) {
+        return std::make_unique<XchgInstr>(content_, position);
+    }
     // IN
     if (0b11100100 == curr1 || 0b11100101 == curr1
         || 0b11101100 == curr1 || 0b11101101 == curr1) {
@@ -155,6 +159,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // IMUL
     // AAM
     // DIV
+    if ((curr1 == 0b11110110 || curr1 == 0b11110111)
+        && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b110) {
+        return std::make_unique<DivInstr>(content_, position);
+    }
     // IDIV
     // AAD
     // CBW
@@ -182,6 +190,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // ROL
     // ROR
     // RCL
+    if (0b11010000 <= curr1 && curr1 <= 0b11010011
+        && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b010) {
+        return std::make_unique<RclInstr>(content_, position);
+    }
     // RCR
     // AND
     if ((0b00100000 <= curr1 && curr1 <= 0b00100011)
