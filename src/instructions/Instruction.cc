@@ -103,10 +103,9 @@ void Instruction::addInfoBytes(const std::vector<uint8_t> &content, int position
 /// Main functions of string generation
 
 void Instruction::setZeroPadding() {
-    if (padding_ != -1)
-        return;
-
-    if (!s_ && w_)
+    if (mod_ != -1 && rm_ != -1 && reg_ == -1 && !w_)
+        padding_ = 0;
+    else if (!s_ && w_)
         padding_ = 4;
     else
         padding_ = 2;
@@ -156,6 +155,20 @@ std::string Instruction::decodeImplicit() const {
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Decode Mod R/M
 
+std::string decodeImmediate(uint8_t low, uint8_t high, bool s, bool w, int padding) {
+    std::stringstream ss;
+    if (s && w) {
+        int16_t value = static_cast<int8_t>(low);
+        if (value < 0)
+            ss << "-" << std::hex << -static_cast<int>(value);
+        else
+            ss << std::hex << static_cast<int>(value);
+        return ss.str();
+    }
+    uint16_t value = uint8ToUint16(low, high, w);
+    return Uint16ToHexString(value, padding);
+}
+
 std::string decodeDirectMemory(uint8_t imm_low, uint8_t imm_high) {
     uint16_t address = uint8ToUint16(imm_low, imm_high, true);
     return "[" + Uint16ToHexString(address, 4) + "]";
@@ -183,13 +196,15 @@ std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_l
 }
 
 std::string Instruction::decodeModRm() const {
+    std::string byteString = reg_ == -1 && !w_ ? "byte " : "";
+
     std::string regValue;
     if (reg_ != -1)
         regValue = getRegisterString(reg_, w_, two_bits_reg_);
     else if (v_used_)
         regValue = v_ ? "cl" : "1";
     else if (info_byte_type_ != NONE)
-        regValue = Uint16ToHexString(uint8ToUint16(imm_low_, imm_high_, w_), padding_); // TODO CHECK
+        regValue = decodeImmediate(imm_low_, imm_high_, s_, w_, padding_);
 
     if (mod_ == 0b11) {
         if (regValue.empty())
@@ -226,10 +241,10 @@ std::string Instruction::decodeModRm() const {
     std::string rmValue = decodeMemoryOperand(operand, mod_, disp_low_, disp_high_);
 
     if (regValue.empty())
-        return rmValue;
+        return byteString + rmValue;
     if (d_)
-        return regValue + ", " + rmValue;
-    return rmValue + ", " + regValue;
+        return byteString + regValue + ", " + rmValue;
+    return byteString + rmValue + ", " + regValue;
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///

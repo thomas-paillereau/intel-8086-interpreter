@@ -18,8 +18,6 @@ AdcInstr::AdcInstr(const std::vector<uint8_t> &content, int position) {
         size_ = 2;
         info_byte_type_ = DATA;
         s_ = Utils::getEnabledBitFromByte(curr1, 1);
-        if (s_)
-            padding_ = 0;
     } else {
         effect_ = 2;
         size_ = 1;

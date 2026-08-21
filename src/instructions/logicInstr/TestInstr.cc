@@ -15,7 +15,6 @@ TestInstr::TestInstr(const std::vector<uint8_t> &content, int position) {
         effect_ = 1;
         size_ = 2;
         info_byte_type_ = DATA;
-        padding_ = 0;
     } else {
         effect_ = 2;
         size_ = 1;
