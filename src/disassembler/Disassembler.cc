@@ -100,6 +100,11 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     }
     // ADC
     // INC
+    if (((curr1 == 0b11111110 || curr1 == 0b11111111)
+         && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
+        || (0b01000000 <= curr1 && curr1 <= 0b01000111)) {
+        return std::make_unique<IncInstr>(content_, position);
+    }
     // AAA
     // BAA
     // SUB
@@ -118,7 +123,7 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     }
     // DEC
     if (((0b11111110 == curr1 || curr1 == 0b11111111)
-         && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
+         && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b001)
         || (0b01001000 <= curr1 && curr1 <= 0b01001111)) {
         return std::make_unique<DecInstr>(content_, position);
     }
