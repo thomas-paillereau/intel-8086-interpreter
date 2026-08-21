@@ -29,6 +29,7 @@
 
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
 #include "logicInstr/ShlSalInstr.hh"
+#include "logicInstr/ShrInstr.hh"
 
 #include "logicInstr/AndInstr.hh"
 #include "logicInstr/TestInstr.hh"

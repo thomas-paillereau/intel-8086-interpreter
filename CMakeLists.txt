@@ -87,6 +87,8 @@ add_executable(intel8084Interpreter
         src/instructions/controlTransferInstr/JbeJnaInstr.hh
         src/instructions/processorControlInstr/CldInstr.cc
         src/instructions/processorControlInstr/CldInstr.hh
+        src/instructions/logicInstr/ShrInstr.cc
+        src/instructions/logicInstr/ShrInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

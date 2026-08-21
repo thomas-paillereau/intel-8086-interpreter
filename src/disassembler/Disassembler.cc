@@ -168,6 +168,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<ShlSalInstr>(content_, position);
     }
     // SHR
+    if (0b11010000 <= curr1 && curr1 <= 0b11010011
+        && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b101) {
+        return std::make_unique<ShrInstr>(content_, position);
+    }
     // SAR
     // ROL
     // ROR
