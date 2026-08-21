@@ -89,6 +89,8 @@ add_executable(intel8084Interpreter
         src/instructions/processorControlInstr/CldInstr.hh
         src/instructions/logicInstr/ShrInstr.cc
         src/instructions/logicInstr/ShrInstr.hh
+        src/instructions/stringManipulationInstr/RepInstr.cc
+        src/instructions/stringManipulationInstr/RepInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

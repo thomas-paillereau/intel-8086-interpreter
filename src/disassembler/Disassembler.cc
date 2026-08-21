@@ -208,6 +208,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
 
     /// STRING MANIPULATION
     // REP
+    if (0b11110010 == curr1 || 0b11110011 == curr1) {
+        return std::make_unique<RepInstr>(content_, position);
+    }
     // MOVS
     // CMPS
     // SCAS

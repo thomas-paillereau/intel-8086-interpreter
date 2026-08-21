@@ -37,6 +37,7 @@
 #include "logicInstr/XorInstr.hh"
 
 /// String Manipulation Instructions --------------------------------------------------------------------------------///
+#include "stringManipulationInstr/RepInstr.hh"
 
 /// Control Transfer Instructions -----------------------------------------------------------------------------------///
 #include "controlTransferInstr/CallInstr.hh"
