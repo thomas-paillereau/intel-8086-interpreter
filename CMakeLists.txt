@@ -101,6 +101,10 @@ add_executable(intel8084Interpreter
         src/instructions/dataTransferInstr/XchgInstr.hh
         src/instructions/logicInstr/RclInstr.cc
         src/instructions/logicInstr/RclInstr.hh
+        src/instructions/controlTransferInstr/LoopInstr.cc
+        src/instructions/controlTransferInstr/LoopInstr.hh
+        src/instructions/logicInstr/SarInstr.cc
+        src/instructions/logicInstr/SarInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

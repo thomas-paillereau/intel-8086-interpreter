@@ -32,6 +32,7 @@
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
 #include "logicInstr/ShlSalInstr.hh"
 #include "logicInstr/ShrInstr.hh"
+#include "logicInstr/SarInstr.hh"
 
 #include "logicInstr/RclInstr.hh"
 
@@ -58,6 +59,8 @@
 #include "controlTransferInstr/JnleJgInstr.hh"
 #include "controlTransferInstr/JnbJaeInstr.hh"
 #include "controlTransferInstr/JnbeJaInstr.hh"
+
+#include "controlTransferInstr/LoopInstr.hh"
 
 #include "controlTransferInstr/IntInstr.hh"
 

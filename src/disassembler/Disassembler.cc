@@ -187,6 +187,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<ShrInstr>(content_, position);
     }
     // SAR
+    if (0b11010000 <= curr1 && curr1 <= 0b11010011
+        && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b111) {
+        return std::make_unique<SarInstr>(content_, position);
+    }
     // ROL
     // ROR
     // RCL
@@ -309,6 +313,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // JNO
     // JNS
     // LOOP
+    if (curr1 == 0b11100010) {
+        return std::make_unique<LoopInstr>(content_, position);
+    }
     // LOOPZ/LOOPE
     // LOOPNZ/LOOPNE
     // JCXZ
