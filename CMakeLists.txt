@@ -108,8 +108,8 @@ add_executable(intel8084Interpreter
         src/instructions/stringManipulationInstr/MovsInstr.hh
         src/exceptions/NonExistentRegisterException.hh
         src/exceptions/Exception.hh
-        #src/interpreter/Cpu.cc
-        #src/interpreter/Cpu.hh
+        src/interpreter/Cpu.cc
+        src/interpreter/Cpu.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE
