@@ -56,4 +56,6 @@
 #include "controlTransferInstr/IntInstr.hh"
 
 /// Processor Control Instructions
+#include "processorControlInstr/CldInstr.hh"
+
 #include "processorControlInstr/HltInstr.hh"

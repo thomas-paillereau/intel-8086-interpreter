@@ -299,6 +299,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
     // CMC
     // STC
     // CLD
+    if (curr1 == 0b11111100) {
+        return std::make_unique<CldInstr>(content_, position);
+    }
     // STD
     // CLI
     // STI
