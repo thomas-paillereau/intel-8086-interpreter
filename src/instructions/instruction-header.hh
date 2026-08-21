@@ -17,7 +17,7 @@
 #include "arithmeticInstr/SubInstr.hh"
 #include "arithmeticInstr/SbbInstr.hh"
 #include "arithmeticInstr/DecInstr.hh"
-
+#include "arithmeticInstr/NegInstr.hh"
 #include "arithmeticInstr/CmpInstr.hh"
 
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
@@ -38,6 +38,7 @@
 #include "controlTransferInstr/JlJngeInstr.hh"
 
 #include "controlTransferInstr/JneJnzInstr.hh"
+#include "controlTransferInstr/JnlJgeInstr.hh"
 
 #include "controlTransferInstr/JnbJnaInstr.hh"
 

@@ -63,6 +63,10 @@ add_executable(intel8084Interpreter
         src/instructions/arithmeticInstr/SubInstr.hh
         src/instructions/logicInstr/OrInstr.cc
         src/instructions/logicInstr/OrInstr.hh
+        src/instructions/controlTransferInstr/JnlJgeInstr.cc
+        src/instructions/controlTransferInstr/JnlJgeInstr.hh
+        src/instructions/arithmeticInstr/NegInstr.cc
+        src/instructions/arithmeticInstr/NegInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

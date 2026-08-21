@@ -122,6 +122,10 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<DecInstr>(content_, position);
     }
     // NEG
+    if ((curr1 == 0b11110110 || curr1 == 0b11110111)
+        && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b011) {
+        return std::make_unique<NegInstr>(content_, position);
+    }
     // CMP
     if ((0b00111000 <= curr1 && curr1 <= 0b00111011)
         || (0b10000000 <= curr1 && curr1 <= 0b10000011
@@ -236,6 +240,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<JneJnzInstr>(content_, position);
     }
     // JNL/JGE
+    if (curr1 == 0b01111101) {
+        return std::make_unique<JnlJgeInstr>(content_, position);
+    }
     // JNLE/JG
     // JNB/JAE
     if (curr1 == 0b01110011) {
