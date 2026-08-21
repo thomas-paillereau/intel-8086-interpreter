@@ -5,9 +5,7 @@
 #include <ostream>
 #include <sstream>
 
-#include "utils/Utils.hh"
-
-#define HEADER_SIZE 0x20 //TODO find a way to get the HEADER SIZE FROM RunManager
+#include "disassembler/Disassembler.hh"
 
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Utils
@@ -303,7 +301,7 @@ std::string Instruction::decodeRelative() const {
         displacement = static_cast<int8_t>(imm_low_);
     }
 
-    auto target = static_cast<uint16_t>(position_ - HEADER_SIZE + size_ + displacement);
+    auto target = static_cast<uint16_t>(position_ - Disassembler::getHeaderSize() + size_ + displacement);
     return Uint16ToHexString(target, 4);
 }
 

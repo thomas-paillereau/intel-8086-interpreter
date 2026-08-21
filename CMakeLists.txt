@@ -1,4 +1,3 @@
-#cmake_minimum_required(VERSION 4.3)
 cmake_minimum_required(VERSION 3.31.6)
 project(intel8084Interpreter)
 
@@ -107,6 +106,8 @@ add_executable(intel8084Interpreter
         src/instructions/logicInstr/SarInstr.hh
         src/instructions/stringManipulationInstr/MovsInstr.cc
         src/instructions/stringManipulationInstr/MovsInstr.hh
+        #src/interpreter/Cpu.cc
+        #src/interpreter/Cpu.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

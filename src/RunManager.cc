@@ -7,6 +7,21 @@
 
 #define HEADER_SIZE 0x20
 
+static void helpMessage() {
+    std::cout << "intel 8086 interpreter and disassembler 2.0 (by Thomas Paillereau)" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Usage: ./build/intel8084Interpreter [options] <filename>" << std::endl;
+    std::cout << std::endl;
+    std::cout << "Options:" << std::endl;
+    std::cout << "  -i                            activates the interpreter mode (active by default)" << std::endl;
+    std::cout << "  -d                            activates the disassembler mode" << std::endl;
+    std::cout << "  -m                            enables the printing of instruction on CPU action in interpreter mode"
+            << std::endl;
+    std::cout << "  -h                            show this help message" << std::endl;
+    std::cout << std::endl;
+    _Exit(0);
+}
+
 RunManager::RunManager(int argc, char **argv) {
     status = NORMAL;
     std::string filename;
@@ -14,7 +29,8 @@ RunManager::RunManager(int argc, char **argv) {
     // Consuming given arguments
     for (int i = 1; i < argc; i++) {
         auto currArg = std::string(argv[i]);
-        // TODO make -h and --help
+        if (currArg == "-h" || currArg == "--help")
+            helpMessage();
         if (currArg == "-m")
             this->pretty_print_enabled_ = true;
         else if (currArg == "-d")
@@ -53,10 +69,10 @@ RunManager::RunManager(int argc, char **argv) {
 
 void RunManager::run() {
     if (interpreter_enabled_)
-        std::cout << "Interpreter " << std::endl;
+        std::cout << "Interpreter " << std::endl; //TODO
     else {
-        auto disassembler = Disassembler(content_, instr_section_size_, HEADER_SIZE);
-        disassembler.disassemble();
+        Disassembler::init(instr_section_size_, HEADER_SIZE);
+        Disassembler::disassemble(content_);
     }
 }
 

@@ -7,16 +7,17 @@
 
 class Disassembler {
 public:
-    Disassembler(const std::vector<uint8_t> &content, int content_size, int header_size);
+    static void init(int content_size, int header_size);
 
-    void disassemble();
+    static int getHeaderSize();
 
-    std::unique_ptr<Instruction> disassembleInstruction(int position) const;
+    static void disassemble(const std::vector<uint8_t> &content);
+
+    static std::unique_ptr<Instruction> disassembleInstruction(const std::vector<uint8_t> &content, int position);
 
 private:
-    std::string getStringFromBytes(int position, int size) const;
+    static std::string getStringFromBytes(const std::vector<uint8_t> &content, int position, int size);
 
-    const std::vector<uint8_t> &content_;
-    const int header_size_;
-    const int content_size_;
+    static int header_size_;
+    static int content_size_;
 };
