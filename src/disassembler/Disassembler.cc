@@ -99,6 +99,12 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<AddInstr>(content_, position);
     }
     // ADC
+    if ((0b00010000 <= curr1 && curr1 <= 0b00010011)
+        || (0b10000000 <= curr1 && curr1 <= 0b10000011
+            && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b010)
+        || (0b00010100 <= curr1 && curr1 <= 0b00010101)) {
+        return std::make_unique<AdcInstr>(content_, position);
+    }
     // INC
     if (((curr1 == 0b11111110 || curr1 == 0b11111111)
          && Utils::getIntervalNumFromByte(content_.at(position + 1), 5, 3) == 0b000)
@@ -310,6 +316,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<CldInstr>(content_, position);
     }
     // STD
+    if (curr1 == 0b11111101) {
+        return std::make_unique<StdInstr>(content_, position);
+    }
     // CLI
     // STI
     // HLT

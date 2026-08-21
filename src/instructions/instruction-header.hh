@@ -13,7 +13,7 @@
 
 /// Arithmetic Instructions -----------------------------------------------------------------------------------------///
 #include "arithmeticInstr/AddInstr.hh"
-
+#include "arithmeticInstr/AdcInstr.hh"
 #include  "arithmeticInstr/IncInstr.hh"
 
 #include "arithmeticInstr/SubInstr.hh"
@@ -59,5 +59,6 @@
 
 /// Processor Control Instructions
 #include "processorControlInstr/CldInstr.hh"
+#include "processorControlInstr/StdInstr.hh"
 
 #include "processorControlInstr/HltInstr.hh"
