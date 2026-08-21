@@ -69,6 +69,8 @@ add_executable(intel8084Interpreter
         src/instructions/arithmeticInstr/NegInstr.hh
         src/instructions/arithmeticInstr/CbwInstr.cc
         src/instructions/arithmeticInstr/CbwInstr.hh
+        src/instructions/arithmeticInstr/CwdInstr.cc
+        src/instructions/arithmeticInstr/CwdInstr.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

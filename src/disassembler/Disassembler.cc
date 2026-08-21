@@ -147,6 +147,9 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(int position) 
         return std::make_unique<CbwInstr>(content_, position);
     }
     // CWD
+    if (0b10011001 == curr1) {
+        return std::make_unique<CwdInstr>(content_, position);
+    }
 
     /// LOGIC
     // NOT
