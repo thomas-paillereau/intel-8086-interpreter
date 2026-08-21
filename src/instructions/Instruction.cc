@@ -176,8 +176,8 @@ std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_l
         );
         if (displacement > 0)
             ss << "+" << std::hex << displacement;
-        else
-            ss << "-" << std::hex << displacement;
+        else if (displacement < 0)
+            ss << "-" << std::hex << -displacement;
     }
     return "[" + base + ss.str() + "]";
 }
@@ -278,7 +278,7 @@ std::string Instruction::decodeDirectAddr() const {
 std::string Instruction::decodeRelative() const {
     int16_t displacement;
 
-    if (w_) {
+    if (w_ || info_byte_type_ == DISP_HL) {
         uint16_t value = uint8ToUint16(imm_low_, imm_high_, true);
         displacement = static_cast<int16_t>(value);
     } else {
