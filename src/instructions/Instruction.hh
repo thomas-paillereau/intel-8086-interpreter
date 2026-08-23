@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "interpreter/Cpu.hh"
+#include "interpreter/Cpu.hh"
 
 class Instruction {
 public:
@@ -19,43 +20,85 @@ public:
 
     /// Interpreter utilities
 
-    virtual void execute(Cpu &cpu);
+    // Search values before execution
+    void searchValues(Cpu &cpu);
+
+    // Execute the instruction
+    virtual bool execute(Cpu &cpu);
 
     int getSize() const;
 
 protected:
-    /// General function to add imm and disp bytes to the instruction
+    /// -----------------------------------------------------------------------------------------------------------------///
+    /// DISASSEMBLER PRINTING
+
+    // General function to add imm and disp bytes to the instruction
     void addInfoBytes(const std::vector<uint8_t> &content, int position);
 
-    /// Implicit
+    // Implicit
     std::string decodeImplicit() const;
 
-    /// Mod + R/M
+    // Mod + R/M
     std::string decodeModRm() const;
 
-    /// Reg
+    // Reg
     std::string decodeRegImm() const;
 
-    /// Data
+    // Data
     std::string decodeAccImm() const;
 
-    /// Addr
+    // Addr
     std::string decodeDirectAddr() const;
 
     std::string decodeRelative() const;
 
-    /// Info byte present (PORT, OFFSET, SEG, DISP, TYPE)
+    // Info byte present (PORT, OFFSET, SEG, DISP, TYPE)
     std::string decodeOnlyImm() const;
 
-    /// Basic instruction args
+    /// -----------------------------------------------------------------------------------------------------------------///
+    /// INTERPRETER EXECUTION
+
+    // Setting the val1 depending on reg, w_, and the 3 or 2 bit possibility
+    void setRegisterVal(bool is_rm = false);
+
+    // Swapping the 2 execution values
+    void swapValues();
+
+    // Implicit
+    void searchImplicit();
+
+    // Mod + R/M utility (for memory operand)
+    void searchMemoryOperand(uint16_t base);
+
+    // Mod + R/M
+    void searchModRm(Cpu &cpu);
+
+    // Reg
+    void searchRegImm();
+
+    // Data
+    void searchAccImm();
+
+    // Addr
+    void searchDirectAddr();
+
+    void searchRelative();
+
+    // Info byte present (PORT, OFFSET, SEG, DISP, TYPE)
+    void searchOnlyImm();
+
+    /// -----------------------------------------------------------------------------------------------------------------///
+    /// ATTRIBUTES
+
+    // Basic instruction args
     std::string name_ = "(undefined)";
     int size_ = 1;
     int position_ = 0;
 
-    /// Which type of the instruction it is
+    // Which type of the instruction it is
     int effect_ = 0;
 
-    /// One bit opcode flags
+    // One bit opcode flags
     bool w_ = false;
     bool d_ = false;
     bool s_ = false;
@@ -63,14 +106,14 @@ protected:
     bool v_ = false;
     bool v_used_ = false;
 
-    /// Multiple bit opcode flags (2 or 3)
+    // Multiple bit opcode flags (2 or 3)
     int mod_ = -1;
     int reg_ = -1;
     int rm_ = -1;
 
     bool two_bits_reg_ = false;
 
-    /// 1 byte opcode flags
+    // 1 byte opcode flags
     enum byte_type {
         NONE,
         DATA,
@@ -92,6 +135,13 @@ protected:
     uint8_t disp_high_ = 0b0000;
     int size_disp_ = 0;
 
-    /// Printing utilities
+    // Printing utilities
     int padding_ = -1;
+
+    // Execution utilities
+    Cpu::type type_val1_ = Cpu::type::NONE;
+    uint16_t val1_ = 0b0000;
+
+    Cpu::type type_val2_ = Cpu::type::NONE;
+    uint16_t val2_ = 0b0000;
 };

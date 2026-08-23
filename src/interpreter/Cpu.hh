@@ -18,11 +18,13 @@ public:
 
     const std::vector<uint8_t> &getContent() const;
 
-    /// Getter and setter of IP
+    /// Getter, setter and augmentor of IP
 
     uint16_t getIp() const;
 
     void setIp(uint16_t value);
+
+    bool addToIp(uint16_t value);
 
     /// Basic Push and Pop of memory (with sp as index)
     void push(uint16_t value);
@@ -32,12 +34,14 @@ public:
     /// General Getter and Setter
 
     enum type {
+        NONE,
         MEM8,
         MEM16,
         REG8,
         REG16,
         SEG,
         FLAG,
+        IMM,
     };
 
     uint16_t get(type type, int index) const;

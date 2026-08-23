@@ -5,6 +5,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "exceptions/Exception.hh"
 #include "interpreter/Interpreter.hh"
 
 #define HEADER_SIZE 0x20
@@ -81,22 +82,22 @@ RunManager::RunManager(int argc, char **argv) {
 }
 
 void RunManager::run() {
-    //try {
-    if (interpreter_enabled_) {
-        auto interpreter = Interpreter(content_, content_size_, data_size_
-                                       , interpreter_args_size_, interpreter_args_);
-        interpreter.setPrinting(pretty_print_enabled_);
-        interpreter.interpret();
-    } else {
-        std::cout << "Size: " << content_.size() << std::endl;
-        std::cout << "Content Size: " << content_size_ << std::endl;
-        content_ = std::vector(content_.begin(), content_.begin() + content_size_);
-        Disassembler::init(content_size_);
-        Disassembler::disassemble(content_);
+    try {
+        if (interpreter_enabled_) {
+            auto interpreter = Interpreter(content_, content_size_, data_size_
+                                           , interpreter_args_size_, interpreter_args_);
+            interpreter.setPrinting(pretty_print_enabled_);
+            interpreter.interpret();
+        } else {
+            std::cout << "Size: " << content_.size() << std::endl;
+            std::cout << "Content Size: " << content_size_ << std::endl;
+            content_ = std::vector(content_.begin(), content_.begin() + content_size_);
+            Disassembler::init(content_size_);
+            Disassembler::disassemble(content_);
+        }
+    } catch (Exception &e) {
+        std::cerr << "Error: " << e.what() << std::endl;
     }
-    /*} catch (std::exception &e) {
-        throw e;
-    }*/
 }
 
 void RunManager::exitIfError() const {

@@ -103,8 +103,9 @@ void Instruction::addInfoBytes(const std::vector<uint8_t> &content, int position
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///
-/// Main functions of string generation
+/// Decoding the opcode into assembly code
 
+// Modifying the zero padding length depending on the opcode
 void Instruction::setZeroPadding() {
     if (reg_ == -1 && !w_)
         padding_ = 0;
@@ -114,6 +115,7 @@ void Instruction::setZeroPadding() {
         padding_ = 2;
 }
 
+//Main function of string generation
 std::string Instruction::toString() const {
     if (name_ == "(undefined)")
         return name_;
@@ -140,9 +142,7 @@ std::string Instruction::toString() const {
     return res;
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Implicit
-
+// Implicit
 std::string Instruction::decodeImplicit() const {
     std::stringstream ss;
     if (name_ == "in" || name_ == "out") {
@@ -157,9 +157,7 @@ std::string Instruction::decodeImplicit() const {
     return ss.str();
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Decode Mod R/M
-
+// Decode immediate operand of mod r/m
 std::string decodeImmediate(uint8_t low, uint8_t high, bool s, bool w, int padding) {
     std::stringstream ss;
     if (s && w) {
@@ -174,11 +172,13 @@ std::string decodeImmediate(uint8_t low, uint8_t high, bool s, bool w, int paddi
     return Uint16ToHexString(value, padding);
 }
 
+// Decode direct memory operand of mod r/m
 std::string decodeDirectMemory(uint8_t imm_low, uint8_t imm_high) {
     uint16_t address = uint8ToUint16(imm_low, imm_high, true);
     return "[" + Uint16ToHexString(address, 4) + "]";
 }
 
+// Decode memory operand of mod r/m
 std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_low, uint8_t disp_high) {
     std::stringstream ss;
     if (mod == 0b01) {
@@ -200,6 +200,7 @@ std::string decodeMemoryOperand(const std::string &base, int mod, uint8_t disp_l
     return "[" + base + ss.str() + "]";
 }
 
+// Decode Mod R/M
 std::string Instruction::decodeModRm() const {
     std::string byteString = reg_ == -1 && !w_ ? "byte " : "";
 
@@ -252,9 +253,7 @@ std::string Instruction::decodeModRm() const {
     return byteString + rmValue + ", " + regValue;
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Decode REG Immediate
-
+//Decode REG Immediate
 std::string Instruction::decodeRegImm() const {
     std::string regString = getRegisterString(reg_, w_, two_bits_reg_);
     uint16_t rightValue = uint8ToUint16(imm_low_, imm_high_, w_);
@@ -264,9 +263,7 @@ std::string Instruction::decodeRegImm() const {
     return ss.str();
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Decode Acc Immediate
-
+// Decode Acc Immediate
 std::string Instruction::decodeAccImm() const {
     std::string accString = w_ ? "ax" : "al";
     uint16_t rightValue = uint8ToUint16(imm_low_, imm_high_, w_);
@@ -276,9 +273,7 @@ std::string Instruction::decodeAccImm() const {
     return ss.str();
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Decode Direct Addr
-
+// Decode Direct Addr
 std::string Instruction::decodeDirectAddr() const {
     uint16_t address = uint8ToUint16(imm_low_, imm_high_, true);
     std::string memory = "[" + Uint16ToHexString(address, 4) + "]";
@@ -292,9 +287,7 @@ std::string Instruction::decodeDirectAddr() const {
     return ss.str();
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Decode Relative Instr
-
+// Decode Relative Instr
 std::string Instruction::decodeRelative() const {
     int16_t displacement;
 
@@ -309,32 +302,209 @@ std::string Instruction::decodeRelative() const {
     return Uint16ToHexString(target, 4);
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Decode Immediate Instr
-
+// Decode Immediate Instr
 std::string Instruction::decodeOnlyImm() const {
     uint16_t value = uint8ToUint16(imm_low_, imm_high_, w_);
     return Uint16ToHexString(value, w_ ? 4 : 2);
 }
 
-/// -----------------------------------------------------------------------------------------------------------------///
-/// Print functino
-
+// Print function
 void Instruction::print() const {
     std::cout << toString() << std::endl;
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///
-/// Main functions of instruction execution
+/// Main functions of instruction execution (overridable)
 
-void Instruction::execute([[maybe_unused]] Cpu &cpu) {
+bool Instruction::execute([[maybe_unused]] Cpu &cpu) {
     if (name_ == "(undefined)") {
         throw UnknownInstructionException("Execution was stopped, Unknown instruction detected");
-    } /*else {
+    } else {
         throw NonImplementedInstructionException(
             (name_ + " instruction was not implemented for the execution").c_str());
-    }*/
-    cpu.setIp(cpu.getIp() + size_);
+    }
+    //return cpu.addToIp(size_);
+}
+
+/// -----------------------------------------------------------------------------------------------------------------///
+/// Functions to search for values for execution
+
+// Setting the val1 depending on reg, w_, and the 3 or 2 bit possibility
+void Instruction::setRegisterVal(bool is_rm) {
+    val1_ = is_rm ? rm_ : reg_;
+    if (two_bits_reg_)
+        type_val1_ = Cpu::SEG;
+    else if (w_)
+        type_val1_ = Cpu::REG16;
+    else
+        type_val1_ = Cpu::REG8;
+}
+
+// Swaps the execution values
+void Instruction::swapValues() {
+    uint16_t tmp = val2_;
+    Cpu::type tmp_type = type_val2_;
+
+    val2_ = val1_;
+    type_val2_ = tmp_type;
+
+    val1_ = tmp;
+    type_val1_ = tmp_type;
+}
+
+// Main function of searching
+void Instruction::searchValues(Cpu &cpu) {
+    if (name_ == "(undefined)")
+        return;
+
+    if (name_ == "in" || name_ == "out" || (name_ == "xchg" && effect_ == 1)) {
+        searchImplicit();
+    } else if (mod_ != -1 && rm_ != -1) {
+        searchModRm(cpu);
+    } else if (reg_ != -1 && info_byte_type_ == DATA && mod_ == -1 && rm_ == -1) {
+        searchRegImm();
+    } else if (reg_ != -1 && info_byte_type_ == NONE) {
+        setRegisterVal();
+    } else if (info_byte_type_ == DATA) {
+        searchAccImm();
+    } else if (info_byte_type_ == ADDR_HL) {
+        searchDirectAddr();
+    } else if (info_byte_type_ == DISP || info_byte_type_ == DISP_HL) {
+        searchRelative();
+    } else if (info_byte_type_ != NONE) {
+        searchOnlyImm();
+    }
+}
+
+void Instruction::searchImplicit() {
+    if (name_ == "in" || name_ == "out") {
+        if (effect_ == 0) {
+            type_val1_ = Cpu::REG16;
+            type_val2_ = Cpu::IMM;
+            val1_ = static_cast<uint16_t>(Cpu::reg16::AX);
+            val2_ = imm_low_;
+        } else {
+            type_val1_ = Cpu::REG8;
+            type_val2_ = Cpu::REG16;
+            val1_ = static_cast<uint16_t>(Cpu::reg8::AL);
+            val2_ = static_cast<uint16_t>(Cpu::reg16::DX);
+        }
+    } else if (name_ == "xchg") {
+        setRegisterVal();
+        type_val2_ = Cpu::REG16;
+        val2_ = static_cast<uint16_t>(Cpu::reg16::AX);
+    }
+}
+
+void Instruction::searchMemoryOperand(uint16_t base) {
+    if (mod_ == 0b01) {
+        int displacement = static_cast<int8_t>(disp_low_);
+        if (displacement >= 0)
+            base += displacement;
+        else
+            base -= displacement;
+    } else if (mod_ == 0b10) {
+        int displacement = static_cast<int16_t>(
+            static_cast<uint16_t>(disp_low_) |
+            (static_cast<uint16_t>(disp_high_) << 8)
+        );
+        if (displacement > 0)
+            base += displacement;
+        else if (displacement < 0)
+            base -= displacement;
+    }
+    type_val2_ = Cpu::MEM16;
+    val2_ = base;
+}
+
+void Instruction::searchModRm(Cpu &cpu) {
+    std::string byteString = reg_ == -1 && !w_ ? "byte " : "";
+
+    if (reg_ != -1)
+        setRegisterVal();
+    else if (v_used_) {
+        type_val1_ = v_ ? Cpu::REG8 : Cpu::IMM;
+        val1_ = v_ ? static_cast<uint16_t>(Cpu::reg8::CL) : 1;
+    } else if (info_byte_type_ != NONE) {
+        //TODO checking sign to do in post
+        type_val1_ = Cpu::REG16;
+        val1_ = uint8ToUint16(imm_low_, imm_high_, w_);
+    }
+
+    if (mod_ == 0b11) {
+        swapValues();
+        setRegisterVal(true);
+        if (d_)
+            swapValues();
+    }
+
+    uint16_t operand;
+    if (rm_ == 0b000)
+        operand = cpu.getReg16(Cpu::BX) + cpu.getReg16(Cpu::SI);
+    else if (rm_ == 0b001)
+        operand = cpu.getReg16(Cpu::BX) + cpu.getReg16(Cpu::DI);
+    else if (rm_ == 0b010)
+        operand = cpu.getReg16(Cpu::BP) + cpu.getReg16(Cpu::SI);
+    else if (rm_ == 0b011)
+        operand = cpu.getReg16(Cpu::BP) + cpu.getReg16(Cpu::DI);
+    else if (rm_ == 0b100)
+        operand = cpu.getReg16(Cpu::SI);
+    else if (rm_ == 0b101)
+        operand = cpu.getReg16(Cpu::DI);
+    else if (rm_ == 0b110) {
+        if (mod_ == 0b00) {
+            type_val2_ = Cpu::MEM16;
+            val2_ = uint8ToUint16(imm_low_, imm_high_, true);
+            if (!d_ || type_val1_ == Cpu::NONE)
+                swapValues();
+            return;
+        }
+        operand = cpu.getReg16(Cpu::BP);
+    } else
+        operand = cpu.getReg16(Cpu::BX);
+    searchMemoryOperand(operand);
+
+    if (!d_ || type_val1_ == Cpu::NONE)
+        swapValues();
+}
+
+void Instruction::searchRegImm() {
+    setRegisterVal();
+    type_val2_ = Cpu::IMM;
+    val2_ = uint8ToUint16(imm_low_, imm_high_, w_);
+}
+
+void Instruction::searchAccImm() {
+    type_val1_ = w_ ? Cpu::type::REG16 : Cpu::type::REG8;
+    val1_ = w_ ? static_cast<uint16_t>(Cpu::reg16::AX) : static_cast<uint16_t>(Cpu::reg8::AL);
+    type_val2_ = Cpu::IMM;
+    val2_ = uint8ToUint16(imm_low_, imm_high_, w_);
+}
+
+void Instruction::searchDirectAddr() {
+    reg_ = 0b0;
+    setRegisterVal();
+    type_val2_ = Cpu::IMM;
+    val2_ = uint8ToUint16(imm_low_, imm_high_, true);
+    if (!d_)
+        swapValues();
+}
+
+void Instruction::searchRelative() {
+    int16_t displacement;
+    if (w_ || info_byte_type_ == DISP_HL) {
+        uint16_t value = uint8ToUint16(imm_low_, imm_high_, true);
+        displacement = static_cast<int16_t>(value);
+    } else {
+        displacement = static_cast<int8_t>(imm_low_);
+    }
+    type_val1_ = Cpu::IMM;
+    val1_ = displacement;
+}
+
+void Instruction::searchOnlyImm() {
+    type_val1_ = Cpu::IMM;
+    val1_ = uint8ToUint16(imm_low_, imm_high_, w_);
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///

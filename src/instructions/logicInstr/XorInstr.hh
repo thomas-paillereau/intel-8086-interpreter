@@ -7,4 +7,6 @@
 class XorInstr : public Instruction {
 public:
     XorInstr(const std::vector<uint8_t> &content, int position);
+
+    //bool execute(Cpu &cpu) override;
 };

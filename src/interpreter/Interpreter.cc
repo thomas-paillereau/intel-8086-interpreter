@@ -30,6 +30,7 @@ void Interpreter::interpret() {
             std::cerr << "CPU has reach end of the instructions" << std::endl;
             break;
         }
+        instr->searchValues(cpu_);
 
         // Printing if necessary
         if (printing_enabled_) {

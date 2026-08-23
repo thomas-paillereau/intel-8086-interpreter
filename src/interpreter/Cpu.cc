@@ -81,6 +81,15 @@ void Cpu::setIp(uint16_t value) {
     ip_ = value;
 }
 
+bool Cpu::addToIp(uint16_t value) {
+    if (value == 0)
+        return false;
+    if (ip_ + value < ip_)
+        return true;
+    ip_ += value;
+    return false;
+}
+
 /// General Getter and Setter
 
 uint16_t Cpu::get(type type, int index) const {
@@ -106,16 +115,22 @@ void Cpu::set(type type, int index, uint16_t value) {
     switch (type) {
         case MEM8:
             setMem8(index, value);
+            break;
         case MEM16:
             setMem16(index, value);
+            break;
         case REG8:
             setReg8(static_cast<reg8>(index), value);
+            break;
         case REG16:
             setReg16(static_cast<reg16>(index), value);
+            break;
         case SEG:
             setSeg(static_cast<seg>(index), value);
+            break;
         case FLAG:
             setFlag(static_cast<flag>(index), value);
+            break;
         default:
             break; // TODO make error
     }
