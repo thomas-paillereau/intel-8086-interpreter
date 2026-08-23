@@ -29,6 +29,21 @@ public:
 
     uint16_t pop();
 
+    /// General Getter and Setter
+
+    enum type {
+        MEM8,
+        MEM16,
+        REG8,
+        REG16,
+        SEG,
+        FLAG,
+    };
+
+    uint16_t get(type type, int index) const;
+
+    void set(type type, int index, uint16_t value);
+
     /// Getting and setting memory
 
     uint8_t getMem8(int index) const;

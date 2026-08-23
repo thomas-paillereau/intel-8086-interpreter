@@ -81,6 +81,48 @@ void Cpu::setIp(uint16_t value) {
     ip_ = value;
 }
 
+/// General Getter and Setter
+
+uint16_t Cpu::get(type type, int index) const {
+    switch (type) {
+        case MEM8:
+            return getMem8(index);
+        case MEM16:
+            return getMem16(index);
+        case REG8:
+            return getReg8(static_cast<reg8>(index));
+        case REG16:
+            return getReg16(static_cast<reg16>(index));
+        case SEG:
+            return getSeg(static_cast<seg>(index));
+        case FLAG:
+            return getFlag(static_cast<flag>(index));
+        default:
+            return 0; // TODO make error
+    }
+}
+
+void Cpu::set(type type, int index, uint16_t value) {
+    switch (type) {
+        case MEM8:
+            setMem8(index, value);
+        case MEM16:
+            setMem16(index, value);
+        case REG8:
+            setReg8(static_cast<reg8>(index), value);
+        case REG16:
+            setReg16(static_cast<reg16>(index), value);
+        case SEG:
+            setSeg(static_cast<seg>(index), value);
+        case FLAG:
+            setFlag(static_cast<flag>(index), value);
+        default:
+            break; // TODO make error
+    }
+}
+
+/// Push and pop
+
 void Cpu::push(uint16_t value) {
     sp_ -= 2;
     memory_[sp_] = value & 0xFF;
@@ -94,6 +136,7 @@ uint16_t Cpu::pop() {
     return value;
 }
 
+/// Memory
 uint8_t Cpu::getMem8(int index) const {
     return memory_[index];
 }
@@ -113,6 +156,7 @@ void Cpu::setMem16(int index, uint16_t value) {
     memory_[index + 1] = value >> 8;
 }
 
+/// Reg
 uint8_t Cpu::getReg8(reg8 index) const {
     switch (index) {
         case AL:
@@ -221,6 +265,8 @@ void Cpu::setReg16(reg16 index, uint16_t value) {
     }
 }
 
+/// Seg
+
 uint16_t Cpu::getSeg(seg index) const {
     switch (index) {
         case ES:
@@ -254,6 +300,8 @@ void Cpu::setSeg(seg index, uint16_t value) {
             break; // TODO make error
     }
 }
+
+/// Flags
 
 bool Cpu::getFlag(flag flag) const {
     switch (flag) {
