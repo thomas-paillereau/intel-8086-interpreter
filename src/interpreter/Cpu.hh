@@ -118,7 +118,7 @@ private:
     reg b_{};
     reg c_{};
     reg d_{};
-    uint16_t sp_ = 0xFFFE;
+    uint16_t sp_ = 0x0000;
     uint16_t bp_ = 0x0000;
     uint16_t si_ = 0x0000;
     uint16_t di_ = 0x0000;

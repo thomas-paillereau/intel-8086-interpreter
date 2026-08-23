@@ -45,8 +45,8 @@ RunManager::RunManager(int argc, char **argv) {
             break;
         }
     }
-    interpreter_args_ = argv + i + 1;
-    interpreter_args_size_ = argc - i - 1;
+    interpreter_args_ = argv + i;
+    interpreter_args_size_ = argc - i;
 
 
     // Filename errors

@@ -1,16 +1,70 @@
 #include "Cpu.hh"
 
+#include <cstring>
+
 /// Constructor
 
 Cpu::Cpu(const std::vector<uint8_t> &content, int content_size, int data_size
          , int n_args, char **args) {
-    content_ = std::vector<uint8_t>(content.begin(), content.begin() + content_size);
-    std::string env = ENV;
+    // Setting data into the memory
     for (int i = 0; i < data_size; ++i) {
         memory_.at(i) = content.at(i + content_size);
     }
     ss_ = data_size;
-    // TODO add env and args
+
+    // Separating instructions from data
+    content_ = std::vector(content.begin(), content.begin() + content_size);
+
+    // Getting env var
+    std::string env = ENV;
+
+    // Readjusting sp register
+    size_t n = env.size() + 1;
+    for (int i = 0; i < n_args; ++i)
+        n += strlen(args[i]) + 1;
+
+    if (n % 2 == 1)
+        sp_++;
+
+    // Creating address list
+    std::vector<uint16_t> addrList;
+
+    // Entering Env Var in memory
+    memory_[--sp_] = 0;
+    for (uint8_t c: env)
+        memory_[--sp_] = c;
+
+    uint16_t addrEnv = sp_;
+
+    // Entering argv in memory
+    for (int i = n_args - 1; i >= 0; --i) {
+        memory_[--sp_] = 0;
+        for (int j = static_cast<int>(strlen(args[i]) - 1); j >= 0; --j)
+            memory_[--sp_] = args[i][j];
+        addrList.push_back(sp_);
+    }
+
+    // Adding 2 null bytes
+    memory_[--sp_] = 0;
+    memory_[--sp_] = 0;
+
+    // Adding env addr
+    memory_[--sp_] = addrEnv >> 8;
+    memory_[--sp_] = addrEnv & 0xFF;
+
+    // Adding 2 null bytes
+    memory_[--sp_] = 0;
+    memory_[--sp_] = 0;
+
+    // Adding argv addrs
+    for (uint16_t addr: addrList) {
+        memory_[--sp_] = addr >> 8;
+        memory_[--sp_] = addr & 0xFF;
+    }
+
+    // Adding argc
+    memory_[--sp_] = n_args >> 8;
+    memory_[--sp_] = n_args & 0xFF;
 }
 
 /// Basic getter and setters
