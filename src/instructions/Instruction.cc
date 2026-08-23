@@ -7,6 +7,8 @@
 
 #include "disassembler/Disassembler.hh"
 #include "exceptions/NonExistentRegisterException.hh"
+#include "exceptions/NonImplementedInstructionException.hh"
+#include "exceptions/UnknownInstructionException.hh"
 
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Utils
@@ -320,6 +322,20 @@ std::string Instruction::decodeOnlyImm() const {
 
 void Instruction::print() const {
     std::cout << toString() << std::endl;
+}
+
+/// -----------------------------------------------------------------------------------------------------------------///
+/// Main functions of instruction execution
+
+void Instruction::Exec([[maybe_unused]] Cpu &cpu) {
+    if (name_ == "(undefined)") {
+        std::cout << "Unknown instruction at 0x" << std::hex << position_ << std::endl;
+        throw UnknownInstructionException("Execution was stopped, Unknown instruction detected");
+    } else {
+        std::cout << "Non implemented instruction: " << name_ << std::endl;
+        throw NonImplementedInstructionException(
+            (name_ + " instruction was not implemented for the execution").c_str());
+    }
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///

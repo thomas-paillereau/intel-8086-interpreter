@@ -83,10 +83,10 @@ private:
     uint16_t ss_ = 0x0000;
     uint16_t es_ = 0x0000;
 
-    bool of_ = true;
-    bool sf_ = true;
-    bool zf_ = true;
-    bool cf_ = true;
+    bool of_ = false;
+    bool sf_ = false;
+    bool zf_ = false;
+    bool cf_ = false;
 
     std::unique_ptr<char> lastReg_ = nullptr;
 

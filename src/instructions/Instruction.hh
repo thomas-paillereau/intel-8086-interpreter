@@ -4,15 +4,22 @@
 #include <string>
 #include <vector>
 
+#include "interpreter/Cpu.hh"
+
 class Instruction {
 public:
     Instruction() = default;
 
+    /// Disassembler utilities
     void setZeroPadding();
 
     std::string toString() const;
 
     void print() const;
+
+    /// Interpreter utilities
+
+    virtual void Exec(Cpu &cpu);
 
     int getSize() const;
 
