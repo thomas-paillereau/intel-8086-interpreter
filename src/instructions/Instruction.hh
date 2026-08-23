@@ -139,9 +139,9 @@ protected:
     int padding_ = -1;
 
     // Execution utilities
-    Cpu::type type_val1_ = Cpu::type::NONE;
-    uint16_t val1_ = 0b0000;
+    Cpu::type type_dst_ = Cpu::type::NONE;
+    uint16_t dst_ = 0b0000;
 
-    Cpu::type type_val2_ = Cpu::type::NONE;
-    uint16_t val2_ = 0b0000;
+    Cpu::type type_src_ = Cpu::type::NONE;
+    uint16_t src_ = 0b0000;
 };

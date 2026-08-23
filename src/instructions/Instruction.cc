@@ -331,25 +331,25 @@ bool Instruction::execute([[maybe_unused]] Cpu &cpu) {
 
 // Setting the val1 depending on reg, w_, and the 3 or 2 bit possibility
 void Instruction::setRegisterVal(bool is_rm) {
-    val1_ = is_rm ? rm_ : reg_;
+    src_ = is_rm ? rm_ : reg_;
     if (two_bits_reg_)
-        type_val1_ = Cpu::SEG;
+        type_src_ = Cpu::SEG;
     else if (w_)
-        type_val1_ = Cpu::REG16;
+        type_src_ = Cpu::REG16;
     else
-        type_val1_ = Cpu::REG8;
+        type_src_ = Cpu::REG8;
 }
 
 // Swaps the execution values
 void Instruction::swapValues() {
-    uint16_t tmp = val2_;
-    Cpu::type tmp_type = type_val2_;
+    uint16_t tmp = dst_;
+    Cpu::type tmp_type = type_dst_;
 
-    val2_ = val1_;
-    type_val2_ = tmp_type;
+    dst_ = src_;
+    type_dst_ = type_src_;
 
-    val1_ = tmp;
-    type_val1_ = tmp_type;
+    src_ = tmp;
+    type_src_ = tmp_type;
 }
 
 // Main function of searching
@@ -379,20 +379,20 @@ void Instruction::searchValues(Cpu &cpu) {
 void Instruction::searchImplicit() {
     if (name_ == "in" || name_ == "out") {
         if (effect_ == 0) {
-            type_val1_ = Cpu::REG16;
-            type_val2_ = Cpu::IMM;
-            val1_ = static_cast<uint16_t>(Cpu::reg16::AX);
-            val2_ = imm_low_;
+            type_src_ = Cpu::REG16;
+            type_dst_ = Cpu::IMM;
+            src_ = static_cast<uint16_t>(Cpu::reg16::AX);
+            dst_ = imm_low_;
         } else {
-            type_val1_ = Cpu::REG8;
-            type_val2_ = Cpu::REG16;
-            val1_ = static_cast<uint16_t>(Cpu::reg8::AL);
-            val2_ = static_cast<uint16_t>(Cpu::reg16::DX);
+            type_src_ = Cpu::REG8;
+            type_dst_ = Cpu::REG16;
+            src_ = static_cast<uint16_t>(Cpu::reg8::AL);
+            dst_ = static_cast<uint16_t>(Cpu::reg16::DX);
         }
     } else if (name_ == "xchg") {
         setRegisterVal();
-        type_val2_ = Cpu::REG16;
-        val2_ = static_cast<uint16_t>(Cpu::reg16::AX);
+        type_dst_ = Cpu::REG16;
+        dst_ = static_cast<uint16_t>(Cpu::reg16::AX);
     }
 }
 
@@ -413,8 +413,8 @@ void Instruction::searchMemoryOperand(uint16_t base) {
         else if (displacement < 0)
             base -= displacement;
     }
-    type_val2_ = Cpu::MEM16;
-    val2_ = base;
+    type_dst_ = Cpu::MEM16;
+    dst_ = base;
 }
 
 void Instruction::searchModRm(Cpu &cpu) {
@@ -423,12 +423,12 @@ void Instruction::searchModRm(Cpu &cpu) {
     if (reg_ != -1)
         setRegisterVal();
     else if (v_used_) {
-        type_val1_ = v_ ? Cpu::REG8 : Cpu::IMM;
-        val1_ = v_ ? static_cast<uint16_t>(Cpu::reg8::CL) : 1;
+        type_src_ = v_ ? Cpu::REG8 : Cpu::IMM;
+        src_ = v_ ? static_cast<uint16_t>(Cpu::reg8::CL) : 1;
     } else if (info_byte_type_ != NONE) {
         //TODO checking sign to do in post
-        type_val1_ = Cpu::REG16;
-        val1_ = uint8ToUint16(imm_low_, imm_high_, w_);
+        type_src_ = Cpu::REG16;
+        src_ = uint8ToUint16(imm_low_, imm_high_, w_);
     }
 
     if (mod_ == 0b11) {
@@ -436,6 +436,7 @@ void Instruction::searchModRm(Cpu &cpu) {
         setRegisterVal(true);
         if (d_)
             swapValues();
+        return;
     }
 
     uint16_t operand;
@@ -453,9 +454,9 @@ void Instruction::searchModRm(Cpu &cpu) {
         operand = cpu.getReg16(Cpu::DI);
     else if (rm_ == 0b110) {
         if (mod_ == 0b00) {
-            type_val2_ = Cpu::MEM16;
-            val2_ = uint8ToUint16(imm_low_, imm_high_, true);
-            if (!d_ || type_val1_ == Cpu::NONE)
+            type_dst_ = Cpu::MEM16;
+            dst_ = uint8ToUint16(imm_low_, imm_high_, true);
+            if (!d_ || type_src_ == Cpu::NONE)
                 swapValues();
             return;
         }
@@ -464,28 +465,28 @@ void Instruction::searchModRm(Cpu &cpu) {
         operand = cpu.getReg16(Cpu::BX);
     searchMemoryOperand(operand);
 
-    if (!d_ || type_val1_ == Cpu::NONE)
+    if (!d_ || type_src_ == Cpu::NONE)
         swapValues();
 }
 
 void Instruction::searchRegImm() {
     setRegisterVal();
-    type_val2_ = Cpu::IMM;
-    val2_ = uint8ToUint16(imm_low_, imm_high_, w_);
+    type_dst_ = Cpu::IMM;
+    dst_ = uint8ToUint16(imm_low_, imm_high_, w_);
 }
 
 void Instruction::searchAccImm() {
-    type_val1_ = w_ ? Cpu::type::REG16 : Cpu::type::REG8;
-    val1_ = w_ ? static_cast<uint16_t>(Cpu::reg16::AX) : static_cast<uint16_t>(Cpu::reg8::AL);
-    type_val2_ = Cpu::IMM;
-    val2_ = uint8ToUint16(imm_low_, imm_high_, w_);
+    type_src_ = w_ ? Cpu::type::REG16 : Cpu::type::REG8;
+    src_ = w_ ? static_cast<uint16_t>(Cpu::reg16::AX) : static_cast<uint16_t>(Cpu::reg8::AL);
+    type_dst_ = Cpu::IMM;
+    dst_ = uint8ToUint16(imm_low_, imm_high_, w_);
 }
 
 void Instruction::searchDirectAddr() {
     reg_ = 0b0;
     setRegisterVal();
-    type_val2_ = Cpu::IMM;
-    val2_ = uint8ToUint16(imm_low_, imm_high_, true);
+    type_dst_ = Cpu::IMM;
+    dst_ = uint8ToUint16(imm_low_, imm_high_, true);
     if (!d_)
         swapValues();
 }
@@ -498,13 +499,13 @@ void Instruction::searchRelative() {
     } else {
         displacement = static_cast<int8_t>(imm_low_);
     }
-    type_val1_ = Cpu::IMM;
-    val1_ = displacement;
+    type_src_ = Cpu::IMM;
+    src_ = displacement;
 }
 
 void Instruction::searchOnlyImm() {
-    type_val1_ = Cpu::IMM;
-    val1_ = uint8ToUint16(imm_low_, imm_high_, w_);
+    type_src_ = Cpu::IMM;
+    src_ = uint8ToUint16(imm_low_, imm_high_, w_);
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///

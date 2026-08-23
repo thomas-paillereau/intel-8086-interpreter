@@ -351,3 +351,47 @@ void Cpu::setFlag(flag flag, bool value) {
             break; // TODO make error
     }
 }
+
+void Cpu::updateOF(short dst, short src, short res, char operation) {
+    if (operation == '+') {
+        of_ = false;
+        if (dst < 0 && src < 0 && res >= 0)
+            of_ = true;
+        if (dst >= 0 && src >= 0 && res < 0)
+            of_ = true;
+    } else if (operation == '-') {
+        of_ = false;
+        src = -src;
+        if (dst < 0 && src < 0 && res >= 0)
+            of_ = true;
+        if (dst >= 0 && src >= 0 && res < 0)
+            of_ = true;
+    }
+}
+
+void Cpu::updateSF(short value) {
+    sf_ = value < 0;
+}
+
+void Cpu::updateZF(short value) {
+    zf_ = value == 0;
+}
+
+void Cpu::updateCF(uint16_t dst, uint16_t src, char operation) {
+    if (operation == '-') {
+        cf_ = dst < src;
+    } else {
+        uint32_t dst32 = dst;
+        uint32_t src32 = src;
+        uint32_t res = dst32 + src32;
+        cf_ = res > 0xFFFF;
+    }
+}
+
+std::pair<Cpu::type, uint16_t> Cpu::getLastReg() const {
+    return last_reg_;
+}
+
+void Cpu::setLastReg(type type, uint16_t value) {
+    last_reg_ = std::make_pair(type, value);
+}

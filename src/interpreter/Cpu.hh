@@ -27,6 +27,7 @@ public:
     bool addToIp(uint16_t value);
 
     /// Basic Push and Pop of memory (with sp as index)
+
     void push(uint16_t value);
 
     uint16_t pop();
@@ -120,6 +121,20 @@ public:
 
     void setFlag(flag flag, bool value);
 
+    void updateOF(short dst, short src, short res, char operation);
+
+    void updateSF(short value);
+
+    void updateZF(short value);
+
+    void updateCF(uint16_t dst, uint16_t src, char operation);
+
+    /// Getter and setter of last register used
+
+    std::pair<type, uint16_t> getLastReg() const;
+
+    void setLastReg(type type, uint16_t value);
+
 private:
     /// Union to create the uint16/uint8 situation
     union reg {
@@ -152,7 +167,7 @@ private:
     bool zf_ = false;
     bool cf_ = false;
 
-    std::unique_ptr<char> lastReg_ = nullptr;
+    std::pair<type, uint16_t> last_reg_ = std::make_pair(NONE, 0);
 
     std::array<uint8_t, MEMORY_SIZE> memory_ = std::array<uint8_t, MEMORY_SIZE>();
     int memory_size_ = MEMORY_SIZE;
