@@ -13,7 +13,6 @@ Interpreter::Interpreter(const std::vector<uint8_t> &content, int content_size, 
     Disassembler::init(content_size);
 }
 
-//TODO add printing flag func
 void Interpreter::setPrinting(bool value) {
     printing_enabled_ = value;
 }
@@ -23,35 +22,39 @@ void Interpreter::interpret() {
         std::cout << " AX   BX   CX   DX   SP   BP   SI   DI  FLAGS IP" << std::endl;
     bool running = true;
     while (running) {
+        // Getting instruction
         std::unique_ptr<Instruction> instr;
-        if (printing_enabled_)
-            instr = printCpuStatus();
-        else
+        try {
             instr = Disassembler::disassembleInstruction(cpu_.getContent(), cpu_.getIp());
+        } catch (std::out_of_range &e) {
+            std::cerr << "CPU has reach end of the instructions" << std::endl;
+            break;
+        }
+
+        // Printing if necessary
+        if (printing_enabled_) {
+            std::cout << HEX << cpu_.getReg16(Cpu::AX) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::BX) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::CX) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::DX) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::SP) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::BP) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::SI) << " ";
+            std::cout << HEX << cpu_.getReg16(Cpu::DI) << " ";
+
+            std::cout << (cpu_.getFlag(Cpu::OF) ? "O" : "-");
+            std::cout << (cpu_.getFlag(Cpu::SF) ? "S" : "-");
+            std::cout << (cpu_.getFlag(Cpu::ZF) ? "Z" : "-");
+            std::cout << (cpu_.getFlag(Cpu::CF) ? "C" : "-");
+            std::cout << " ";
+
+            printf("%04x: %-14s"
+                   , cpu_.getIp()
+                   , Disassembler::getStringFromBytes(cpu_.getContent(), cpu_.getIp(), instr->getSize()).c_str());
+            instr->print();
+        }
+
+        // Executing the command
         instr->execute(cpu_);
     }
-}
-
-std::unique_ptr<Instruction> Interpreter::printCpuStatus() const {
-    std::cout << HEX << cpu_.getReg16(Cpu::AX) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::BX) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::CX) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::DX) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::SP) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::BP) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::SI) << " ";
-    std::cout << HEX << cpu_.getReg16(Cpu::DI) << " ";
-
-    std::cout << (cpu_.getFlag(Cpu::OF) ? "O" : "-");
-    std::cout << (cpu_.getFlag(Cpu::SF) ? "S" : "-");
-    std::cout << (cpu_.getFlag(Cpu::ZF) ? "Z" : "-");
-    std::cout << (cpu_.getFlag(Cpu::CF) ? "C" : "-");
-    std::cout << " ";
-
-    auto instr = Disassembler::disassembleInstruction(cpu_.getContent(), cpu_.getIp());
-    printf("%04x: %-14s"
-           , cpu_.getIp()
-           , Disassembler::getStringFromBytes(cpu_.getContent(), cpu_.getIp(), instr->getSize()).c_str());
-    instr->print();
-    return instr;
 }

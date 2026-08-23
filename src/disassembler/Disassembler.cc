@@ -23,8 +23,13 @@ int Disassembler::getContentSize() {
 void Disassembler::disassemble(const std::vector<uint8_t> &content) {
     int pos = 0x0;
     while (pos < content_size_) {
-        auto instruction = disassembleInstruction(content, pos);
-        instruction->setZeroPadding();
+        std::unique_ptr<Instruction> instruction;
+        try {
+            instruction = disassembleInstruction(content, pos);
+            instruction->setZeroPadding();
+        } catch (std::out_of_range &e) {
+            instruction = std::make_unique<Instruction>();
+        }
         printf("%04x: %-14s", pos, getStringFromBytes(content, pos, instruction->getSize()).c_str());
         instruction->print();
         pos += instruction->getSize();
