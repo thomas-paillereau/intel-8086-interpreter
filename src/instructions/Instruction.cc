@@ -305,7 +305,7 @@ std::string Instruction::decodeRelative() const {
         displacement = static_cast<int8_t>(imm_low_);
     }
 
-    auto target = static_cast<uint16_t>(position_ - Disassembler::getHeaderSize() + size_ + displacement);
+    auto target = static_cast<uint16_t>(position_ + size_ + displacement);
     return Uint16ToHexString(target, 4);
 }
 
@@ -327,15 +327,14 @@ void Instruction::print() const {
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Main functions of instruction execution
 
-void Instruction::Exec([[maybe_unused]] Cpu &cpu) {
+void Instruction::execute([[maybe_unused]] Cpu &cpu) {
     if (name_ == "(undefined)") {
-        std::cout << "Unknown instruction at 0x" << std::hex << position_ << std::endl;
         throw UnknownInstructionException("Execution was stopped, Unknown instruction detected");
-    } else {
-        std::cout << "Non implemented instruction: " << name_ << std::endl;
+    } /*else {
         throw NonImplementedInstructionException(
             (name_ + " instruction was not implemented for the execution").c_str());
-    }
+    }*/
+    cpu.setIp(cpu.getIp() + size_);
 }
 
 /// -----------------------------------------------------------------------------------------------------------------///

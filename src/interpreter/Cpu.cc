@@ -2,10 +2,30 @@
 
 /// Constructor
 
-Cpu::Cpu(const std::vector<uint8_t> &data) {
+Cpu::Cpu(const std::vector<uint8_t> &content, int content_size, int data_size
+         , int n_args, char **args) {
+    content_ = std::vector<uint8_t>(content.begin(), content.begin() + content_size);
+    std::string env = ENV;
+    for (int i = 0; i < data_size; ++i) {
+        memory_.at(i) = content.at(i + content_size);
+    }
+    ss_ = data_size;
+    // TODO add env and args
 }
 
 /// Basic getter and setters
+
+const std::vector<uint8_t> &Cpu::getContent() const {
+    return content_;
+}
+
+uint16_t Cpu::getIp() const {
+    return ip_;
+}
+
+void Cpu::setIp(uint16_t value) {
+    ip_ = value;
+}
 
 void Cpu::push(uint16_t value) {
     sp_ -= 2;
@@ -62,7 +82,7 @@ uint8_t Cpu::getReg8(int index) const {
     }
 }
 
-uint16_t Cpu::getReg16(int index) const {
+uint16_t Cpu::getReg16(reg16 index) const {
     switch (index) {
         case 0b000:
             return a_.x;
@@ -116,7 +136,7 @@ void Cpu::setReg8(int index, uint8_t value) {
     }
 }
 
-void Cpu::setReg16(int index, uint16_t value) {
+void Cpu::setReg16(reg16 index, uint16_t value) {
     switch (index) {
         case 0b000:
             a_.x = value;

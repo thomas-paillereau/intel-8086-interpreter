@@ -112,6 +112,8 @@ add_executable(intel8084Interpreter
         src/interpreter/Cpu.hh
         src/exceptions/UnknownInstructionException.hh
         src/exceptions/NonImplementedInstructionException.hh
+        src/interpreter/Interpreter.cc
+        src/interpreter/Interpreter.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE

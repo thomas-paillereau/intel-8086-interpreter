@@ -37,9 +37,13 @@ public:
     bool getPrettyPrint() const;
 
 private:
-    bool interpreter_enabled_;
-    bool pretty_print_enabled_;
+    bool interpreter_enabled_ = true;
+    bool pretty_print_enabled_ = false;
 
     std::vector<uint8_t> content_;
-    int instr_section_size_;
+    int content_size_;
+    int data_size_;
+
+    char **interpreter_args_;
+    int interpreter_args_size_;
 };

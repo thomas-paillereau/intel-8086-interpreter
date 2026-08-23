@@ -5,6 +5,8 @@
 #include <iostream>
 #include <fstream>
 
+#include "interpreter/Interpreter.hh"
+
 #define HEADER_SIZE 0x20
 
 static void helpMessage() {
@@ -27,7 +29,8 @@ RunManager::RunManager(int argc, char **argv) {
     std::string filename;
 
     // Consuming given arguments
-    for (int i = 1; i < argc; i++) {
+    int i = 1;
+    for (; i < argc; i++) {
         auto currArg = std::string(argv[i]);
         if (currArg == "-h" || currArg == "--help")
             helpMessage();
@@ -38,18 +41,19 @@ RunManager::RunManager(int argc, char **argv) {
         else if (currArg == "-i")
             this->interpreter_enabled_ = true;
         else {
-            if (!filename.empty())
-                status = WRONG_ARGS;
-            else
-                filename = currArg;
+            filename = currArg;
+            break;
         }
     }
+    interpreter_args_ = argv + i + 1;
+    interpreter_args_size_ = argc - i - 1;
+
 
     // Filename errors
-    if (filename.empty())
+    if (filename.empty()) {
         status = WRONG_ARGS;
-    if (status == WRONG_ARGS)
         return;
+    }
 
     // Opening file and getting content
     auto file = std::ifstream(filename, std::ios::binary);
@@ -57,27 +61,42 @@ RunManager::RunManager(int argc, char **argv) {
         status = WRONG_ARGS;
         return;
     }
-    content_ = {std::istreambuf_iterator<char>(file), std::istreambuf_iterator<char>()};
+    content_ = {std::istreambuf_iterator(file), std::istreambuf_iterator<char>()};
 
     // Getting the size of instruction section
-    instr_section_size_ =
+    content_size_ =
             content_.at(8) % 256 * static_cast<int>(std::pow(256, 0))
             + content_.at(9) % 256 * static_cast<int>(std::pow(256, 1))
             + content_.at(10) % 256 * static_cast<int>(std::pow(256, 2))
             + content_.at(11) % 256 * static_cast<int>(std::pow(256, 3));
+
+    data_size_ =
+            content_.at(12) % 256 * static_cast<int>(std::pow(256, 0))
+            + content_.at(13) % 256 * static_cast<int>(std::pow(256, 1))
+            + content_.at(14) % 256 * static_cast<int>(std::pow(256, 2))
+            + content_.at(15) % 256 * static_cast<int>(std::pow(256, 3));
+
+    // Removing header, which is not useful anymore
+    content_ = std::vector(content_.begin() + HEADER_SIZE, content_.end());
 }
 
 void RunManager::run() {
-    try {
-        if (interpreter_enabled_)
-            std::cout << "Interpreter " << std::endl; //TODO
-        else {
-            Disassembler::init(instr_section_size_, HEADER_SIZE);
-            Disassembler::disassemble(content_);
-        }
-    } catch (std::exception &e) {
-        std::cerr << "Error : " << e.what() << std::endl;
+    //try {
+    if (interpreter_enabled_) {
+        auto interpreter = Interpreter(content_, content_size_, data_size_
+                                       , interpreter_args_size_, interpreter_args_);
+        interpreter.setPrinting(pretty_print_enabled_);
+        interpreter.interpret();
+    } else {
+        std::cout << "Size: " << content_.size() << std::endl;
+        std::cout << "Content Size: " << content_size_ << std::endl;
+        content_ = std::vector(content_.begin(), content_.begin() + content_size_);
+        Disassembler::init(content_size_);
+        Disassembler::disassemble(content_);
     }
+    /*} catch (std::exception &e) {
+        throw e;
+    }*/
 }
 
 void RunManager::exitIfError() const {

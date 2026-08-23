@@ -1,7 +1,9 @@
 #pragma once
 
 #define MEMORY_SIZE 0xFFFF
+#define ENV "PATH=/usr:/usr/bin";
 
+#include <array>
 #include <memory>
 #include <vector>
 
@@ -10,7 +12,17 @@ public:
     /// Constructors
     Cpu() = default;
 
-    Cpu(const std::vector<uint8_t> &data);
+    Cpu(const std::vector<uint8_t> &content, int content_size, int data_size, int n_args, char **args);
+
+    /// Direct getter to instructions
+
+    const std::vector<uint8_t> &getContent() const;
+
+    /// Getter and setter of IP
+
+    uint16_t getIp() const;
+
+    void setIp(uint16_t value);
 
     /// Basic Push and Pop of memory (with sp as index)
     void push(uint16_t value);
@@ -29,13 +41,25 @@ public:
 
     /// Getting info from registers
 
+    enum reg16 {
+        AX = 0b000,
+        CX = 0b001,
+        DX = 0b010,
+        BX = 0b011,
+        SP = 0b100,
+        BP = 0b101,
+        SI = 0b110,
+        DI = 0b111,
+        ERROR,
+    };
+
     uint8_t getReg8(int index) const;
 
-    uint16_t getReg16(int index) const;
+    uint16_t getReg16(reg16 index) const;
 
     void setReg8(int index, uint8_t value);
 
-    void setReg16(int index, uint16_t value);
+    void setReg16(reg16 index, uint16_t value);
 
     /// Getting and Setting of segments
 
@@ -73,7 +97,7 @@ private:
     reg b_{};
     reg c_{};
     reg d_{};
-    uint16_t sp_ = 0x0000;
+    uint16_t sp_ = 0xFFFE;
     uint16_t bp_ = 0x0000;
     uint16_t si_ = 0x0000;
     uint16_t di_ = 0x0000;
@@ -81,7 +105,7 @@ private:
     uint16_t cs_ = 0x0000;
     uint16_t ds_ = 0x0000;
     uint16_t ss_ = 0x0000;
-    uint16_t es_ = 0x0000;
+    uint16_t es_ = 0xfffe;
 
     bool of_ = false;
     bool sf_ = false;
@@ -90,5 +114,8 @@ private:
 
     std::unique_ptr<char> lastReg_ = nullptr;
 
-    uint8_t memory_[MEMORY_SIZE] = {};
+    std::array<uint8_t, MEMORY_SIZE> memory_;
+    int memory_size_ = MEMORY_SIZE;
+
+    std::vector<uint8_t> content_;
 };

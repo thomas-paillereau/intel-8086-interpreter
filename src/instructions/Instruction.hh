@@ -19,7 +19,7 @@ public:
 
     /// Interpreter utilities
 
-    virtual void Exec(Cpu &cpu);
+    virtual void execute(Cpu &cpu);
 
     int getSize() const;
 

@@ -10,34 +10,29 @@
 #include "instructions/instruction-header.hh"
 #include "utils/Utils.hh"
 
-int Disassembler::header_size_ = 0;
 int Disassembler::content_size_ = 0;
 
-void Disassembler::init(int contentsize, int header_size) {
-    header_size_ = header_size;
-    content_size_ = contentsize;
+void Disassembler::init(int content_size) {
+    content_size_ = content_size;
 }
 
-int Disassembler::getHeaderSize() {
-    return header_size_;
+int Disassembler::getContentSize() {
+    return content_size_;
 }
 
 void Disassembler::disassemble(const std::vector<uint8_t> &content) {
-    int pos = header_size_;
-    while (pos < header_size_ + content_size_) {
+    int pos = 0x0;
+    while (pos < content_size_) {
         auto instruction = disassembleInstruction(content, pos);
         instruction->setZeroPadding();
-        printf("%04x: %-14s", pos - header_size_, getStringFromBytes(content, pos, instruction->getSize()).c_str());
-        if (pos + instruction->getSize() > header_size_ + content_size_)
-            std::cout << "(undefined)" << std::endl;
-        else
-            instruction->print();
+        printf("%04x: %-14s", pos, getStringFromBytes(content, pos, instruction->getSize()).c_str());
+        instruction->print();
         pos += instruction->getSize();
     }
 }
 
 std::string Disassembler::getStringFromBytes(const std::vector<uint8_t> &content, int position, int size) {
-    if (position + size > header_size_ + content_size_)
+    if (position + size > content_size_)
         return "00";
     std::stringstream ss;
     for (int i = 0; i < size; ++i) {
@@ -72,7 +67,8 @@ std::unique_ptr<Instruction> Disassembler::disassembleInstruction(const std::vec
     }
     // POP
     if ((0b01011000 <= curr1 && curr1 <= 0b01011111)
-        || (curr1 == 0b10001111 && Utils::getIntervalNumFromByte(content.at(position + 1), 5, 3) == 0b000)
+        || (curr1 == 0b10001111
+            && Utils::getIntervalNumFromByte(content.at(position + 1), 5, 3) == 0b000)
         || (0b00000111 == curr1 || 0b00001111 == curr1 || 0b00010111 == curr1 || 0b00011111 == curr1)) {
         return std::make_unique<PopInstr>(content, position);
     }
