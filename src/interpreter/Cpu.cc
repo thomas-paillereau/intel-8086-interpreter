@@ -59,76 +59,53 @@ void Cpu::setMem16(int index, uint16_t value) {
     memory_[index + 1] = value >> 8;
 }
 
-uint8_t Cpu::getReg8(int index) const {
+uint8_t Cpu::getReg8(reg8 index) const {
     switch (index) {
-        case 0b000:
+        case AL:
             return a_.bytes.l;
-        case 0b001:
+        case CL:
             return c_.bytes.l;
-        case 0b010:
+        case DL:
             return d_.bytes.l;
-        case 0b011:
+        case BL:
             return b_.bytes.l;
-        case 0b100:
+        case AH:
             return a_.bytes.h;
-        case 0b101:
+        case CH:
             return c_.bytes.h;
-        case 0b110:
+        case DH:
             return d_.bytes.h;
-        case 0b111:
+        case BH:
             return b_.bytes.h;
         default:
             return 0; // TODO make error
     }
 }
 
-uint16_t Cpu::getReg16(reg16 index) const {
+void Cpu::setReg8(reg8 index, uint8_t value) {
     switch (index) {
-        case 0b000:
-            return a_.x;
-        case 0b001:
-            return c_.x;
-        case 0b010:
-            return d_.x;
-        case 0b011:
-            return b_.x;
-        case 0b100:
-            return sp_;
-        case 0b101:
-            return bp_;
-        case 0b110:
-            return si_;
-        case 0b111:
-            return di_;
-        default:
-            return 0; // TODO make error
-    }
-}
-
-void Cpu::setReg8(int index, uint8_t value) {
-    switch (index) {
-        case 0b000:
+        case AL:
             a_.bytes.l = value;
             break;
-        case 0b001:
+        case CL:
             c_.bytes.l = value;
             break;
-        case 0b010:
+        case DL:
             d_.bytes.l = value;
             break;
-        case 0b011:
+        case BL:
             b_.bytes.l = value;
             break;
-        case 0b100:
+        case AH:
             a_.bytes.h = value;
             break;
-        case 0b101:
+        case CH:
             c_.bytes.h = value;
             break;
-        case 0b110:
+        case DH:
             d_.bytes.h = value;
             break;
-        case 0b111:
+        case BH:
             b_.bytes.h = value;
             break;
         default:
@@ -136,30 +113,53 @@ void Cpu::setReg8(int index, uint8_t value) {
     }
 }
 
+uint16_t Cpu::getReg16(reg16 index) const {
+    switch (index) {
+        case AX:
+            return a_.x;
+        case CX:
+            return c_.x;
+        case DX:
+            return d_.x;
+        case BX:
+            return b_.x;
+        case SP:
+            return sp_;
+        case BP:
+            return bp_;
+        case SI:
+            return si_;
+        case DI:
+            return di_;
+        default:
+            return 0; // TODO make error
+    }
+}
+
 void Cpu::setReg16(reg16 index, uint16_t value) {
     switch (index) {
-        case 0b000:
+        case AX:
             a_.x = value;
             break;
-        case 0b001:
+        case CX:
             c_.x = value;
             break;
-        case 0b010:
+        case DX:
             d_.x = value;
             break;
-        case 0b011:
+        case BX:
             b_.x = value;
             break;
-        case 0b100:
+        case SP:
             sp_ = value;
             break;
-        case 0b101:
+        case BP:
             bp_ = value;
             break;
-        case 0b110:
+        case SI:
             si_ = value;
             break;
-        case 0b111:
+        case DI:
             di_ = value;
             break;
         default:
@@ -167,37 +167,35 @@ void Cpu::setReg16(reg16 index, uint16_t value) {
     }
 }
 
-uint16_t Cpu::getSeg(int index) const {
+uint16_t Cpu::getSeg(seg index) const {
     switch (index) {
-        case 0b000:
+        case ES:
             return es_;
-        case 0b001:
+        case CS:
             return cs_;
-        case 0b010:
+        case SS:
             return ss_;
-        case 0b011:
+        case DS:
             return ds_;
-        case 0b100:
         default:
             return 0; // TODO make error
     }
 }
 
-void Cpu::setSeg(int index, uint16_t value) {
+void Cpu::setSeg(seg index, uint16_t value) {
     switch (index) {
-        case 0b000:
+        case ES:
             es_ = value;
             break;
-        case 0b001:
+        case CS:
             cs_ = value;
             break;
-        case 0b010:
+        case SS:
             ss_ = value;
             break;
-        case 0b011:
+        case DS:
             ds_ = value;
             break;
-        case 0b100:
         default:
             break; // TODO make error
     }

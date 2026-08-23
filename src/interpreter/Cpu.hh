@@ -39,7 +39,25 @@ public:
 
     void setMem16(int index, uint16_t value);
 
-    /// Getting info from registers
+    /// Getting info from 8 bit register
+
+    enum reg8 {
+        AL = 0b000,
+        CL = 0b001,
+        DL = 0b010,
+        BL = 0b011,
+        AH = 0b100,
+        CH = 0b101,
+        DH = 0b110,
+        BH = 0b111,
+        ERR_8B,
+    };
+
+    uint8_t getReg8(reg8 index) const;
+
+    void setReg8(reg8 index, uint8_t value);
+
+    /// Getting info from 16 bit registers
 
     enum reg16 {
         AX = 0b000,
@@ -50,22 +68,25 @@ public:
         BP = 0b101,
         SI = 0b110,
         DI = 0b111,
-        ERROR,
+        ERR_16B,
     };
 
-    uint8_t getReg8(int index) const;
-
     uint16_t getReg16(reg16 index) const;
-
-    void setReg8(int index, uint8_t value);
 
     void setReg16(reg16 index, uint16_t value);
 
     /// Getting and Setting of segments
 
-    uint16_t getSeg(int index) const;
+    enum seg {
+        ES = 0b00,
+        CS = 0b01,
+        SS = 0b10,
+        DS = 0b11,
+    };
 
-    void setSeg(int index, uint16_t value);
+    uint16_t getSeg(seg index) const;
+
+    void setSeg(seg index, uint16_t value);
 
     /// Interacting with flags
 
@@ -114,7 +135,7 @@ private:
 
     std::unique_ptr<char> lastReg_ = nullptr;
 
-    std::array<uint8_t, MEMORY_SIZE> memory_;
+    std::array<uint8_t, MEMORY_SIZE> memory_ = std::array<uint8_t, MEMORY_SIZE>();
     int memory_size_ = MEMORY_SIZE;
 
     std::vector<uint8_t> content_;
