@@ -7,4 +7,6 @@
 class JmpInstr : public Instruction {
 public:
     JmpInstr(const std::vector<uint8_t> &content, int position);
+
+    bool execute(Cpu &cpu, bool printing) override;
 };

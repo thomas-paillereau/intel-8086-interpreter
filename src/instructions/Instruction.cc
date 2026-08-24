@@ -400,19 +400,13 @@ void Instruction::searchImplicit() {
 void Instruction::searchMemoryOperand(uint16_t base) {
     if (mod_ == 0b01) {
         int displacement = static_cast<int8_t>(disp_low_);
-        if (displacement >= 0)
-            base += displacement;
-        else
-            base -= displacement;
+        base += displacement;
     } else if (mod_ == 0b10) {
         int displacement = static_cast<int16_t>(
             static_cast<uint16_t>(disp_low_) |
             (static_cast<uint16_t>(disp_high_) << 8)
         );
-        if (displacement > 0)
-            base += displacement;
-        else if (displacement < 0)
-            base -= displacement;
+        base += displacement;
     }
     type_src_ = Cpu::MEM16;
     src_ = base;

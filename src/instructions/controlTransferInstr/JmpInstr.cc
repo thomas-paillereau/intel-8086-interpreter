@@ -40,3 +40,8 @@ JmpInstr::JmpInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool JmpInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
+    cpu.setIp(cpu.get(type_dst_, dst_));
+    return false;
+}
