@@ -173,6 +173,10 @@ void Cpu::setMem16(int index, uint16_t value) {
     memory_[index + 1] = value >> 8;
 }
 
+std::array<uint8_t, MEMORY_SIZE> &Cpu::getMemory() {
+    return memory_;
+}
+
 /// Reg
 uint8_t Cpu::getReg8(reg8 index) const {
     switch (index) {

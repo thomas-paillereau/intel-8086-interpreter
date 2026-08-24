@@ -59,6 +59,8 @@ public:
 
     void setMem16(int index, uint16_t value);
 
+    std::array<uint8_t, MEMORY_SIZE> &getMemory();
+
     /// Getting info from 8 bit register
 
     enum reg8 {
