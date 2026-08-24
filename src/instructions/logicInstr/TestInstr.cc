@@ -31,3 +31,18 @@ TestInstr::TestInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool TestInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
+    uint16_t dst = cpu.get(type_dst_, dst_);
+    uint16_t src = cpu.get(type_src_, src_);
+    uint16_t value = dst & src;
+    cpu.updateSF(value);
+    cpu.updateZF(value);
+    cpu.setFlag(Cpu::CF, false);
+
+    cpu.setLastReg(type_dst_, dst_);
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}

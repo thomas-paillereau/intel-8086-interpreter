@@ -55,7 +55,7 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     addInfoBytes(content, position);
 }
 
-bool MovInstr::execute(Cpu &cpu) {
+bool MovInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
     uint16_t src = cpu.get(type_src_, src_);
     cpu.set(type_dst_, dst_, src);
 

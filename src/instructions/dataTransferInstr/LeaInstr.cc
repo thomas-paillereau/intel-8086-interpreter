@@ -24,7 +24,7 @@ LeaInstr::LeaInstr(const std::vector<uint8_t> &content, int position) {
     d_ = true;
 }
 
-bool LeaInstr::execute(Cpu &cpu) {
+bool LeaInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
     cpu.set(type_dst_, dst_, src_);
 
     cpu.setLastReg(type_dst_, dst_);

@@ -35,7 +35,7 @@ CmpInstr::CmpInstr(const std::vector<uint8_t> &content, int position) {
     addInfoBytes(content, position);
 }
 
-bool CmpInstr::execute(Cpu &cpu) {
+bool CmpInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
     auto dst = static_cast<short>(cpu.get(type_dst_, dst_));
     auto src = static_cast<short>(cpu.get(type_src_, src_));
     auto value = static_cast<short>(dst - src);

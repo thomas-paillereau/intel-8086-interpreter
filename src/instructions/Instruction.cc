@@ -317,7 +317,7 @@ void Instruction::print() const {
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Main functions of instruction execution (overridable)
 
-bool Instruction::execute([[maybe_unused]] Cpu &cpu) {
+bool Instruction::execute([[maybe_unused]] Cpu &cpu, [[maybe_unused]] bool printing) {
     if (name_ == "(undefined)") {
         throw UnknownInstructionException("Execution was stopped, Unknown instruction detected");
     } else {
@@ -456,7 +456,7 @@ void Instruction::searchModRm(Cpu &cpu) {
     else if (rm_ == 0b110) {
         if (mod_ == 0b00) {
             type_src_ = Cpu::MEM16;
-            src_ = uint8ToUint16(imm_low_, imm_high_, true);
+            src_ = uint8ToUint16(disp_low_, disp_high_, true);
             if (!d_ || type_dst_ == Cpu::NONE)
                 swapValues();
             return;

@@ -58,7 +58,7 @@ void Interpreter::interpret() {
         }
 
         // Executing the command
-        bool ip_exceeded = instr->execute(cpu_);
+        bool ip_exceeded = instr->execute(cpu_, printing_enabled_);
 
         if (ip_exceeded) {
             std::cerr << "Error : Instruction section size was exceeded." << std::endl;

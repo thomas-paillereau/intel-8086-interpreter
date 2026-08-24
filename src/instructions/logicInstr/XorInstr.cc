@@ -35,7 +35,7 @@ XorInstr::XorInstr(const std::vector<uint8_t> &content, int position) {
     addInfoBytes(content, position);
 }
 
-bool XorInstr::execute(Cpu &cpu) {
+bool XorInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
     uint16_t dst = cpu.get(type_dst_, dst_);
     uint16_t src = cpu.get(type_src_, src_);
     uint16_t value = dst ^ src;
