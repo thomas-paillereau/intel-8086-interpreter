@@ -106,6 +106,8 @@ uint16_t Cpu::get(type type, int index) const {
             return getSeg(static_cast<seg>(index));
         case FLAG:
             return getFlag(static_cast<flag>(index));
+        case IMM:
+            return index;
         default:
             return 0; // TODO make error
     }

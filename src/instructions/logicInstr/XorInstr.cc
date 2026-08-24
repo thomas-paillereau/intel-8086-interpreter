@@ -38,7 +38,7 @@ XorInstr::XorInstr(const std::vector<uint8_t> &content, int position) {
 bool XorInstr::execute(Cpu &cpu) {
     uint16_t dst = cpu.get(type_dst_, dst_);
     uint16_t src = cpu.get(type_src_, src_);
-    uint16_t value = dst + src;
+    uint16_t value = dst ^ src;
     cpu.set(type_dst_, dst_, value);
     cpu.updateSF(static_cast<short>(value));
     cpu.updateZF(static_cast<short>(value));
