@@ -49,10 +49,11 @@ void Interpreter::interpret() {
             std::cout << (cpu_.getFlag(Cpu::CF) ? "C" : "-");
             std::cout << " ";
 
-            printf("%04x: %-14s"
+            printf("%04x: %-13s"
                    , cpu_.getIp()
                    , Disassembler::getStringFromBytes(cpu_.getContent(), cpu_.getIp(), instr->getSize()).c_str());
-            instr->print();
+            std::cout << instr->toString();
+            instr->printAddressOfVals(cpu_);
         }
 
         // Executing the command

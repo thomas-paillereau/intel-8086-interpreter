@@ -23,6 +23,9 @@ public:
     // Search values before execution
     void searchValues(Cpu &cpu);
 
+    // Prints the value of the first address of the line
+    void printAddressOfVals(Cpu &cpu) const;
+
     // Execute the instruction
     virtual bool execute(Cpu &cpu);
 

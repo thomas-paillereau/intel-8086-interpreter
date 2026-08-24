@@ -508,6 +508,17 @@ void Instruction::searchOnlyImm() {
     src_ = uint8ToUint16(imm_low_, imm_high_, w_);
 }
 
+void Instruction::printAddressOfVals(Cpu &cpu) const {
+    if (type_src_ == Cpu::MEM16) {
+        std::cout << " ;[" << std::hex << std::setw(4) << std::setfill('0') << src_ << std::dec << "]"
+                << std::hex << std::setw(4) << std::setfill('0') << cpu.get(type_src_, src_);
+    } else if (type_dst_ == Cpu::MEM16) {
+        std::cout << " ;[" << std::hex << std::setw(4) << std::setfill('0') << dst_ << std::dec << "]"
+                << std::hex << std::setw(4) << std::setfill('0') << cpu.get(type_dst_, dst_);
+    }
+    std::cout << std::endl;
+}
+
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Getters
 
