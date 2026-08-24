@@ -26,3 +26,13 @@ RetInstr::RetInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool RetInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
+    uint16_t value = cpu.pop();
+    cpu.setIp(value);
+    if (type_dst_ != Cpu::type::NONE) {
+        auto diff = static_cast<short>(cpu.get(type_dst_, dst_));
+        cpu.setReg16(Cpu::SP, static_cast<short>(cpu.getReg16(Cpu::SP) + diff));
+    }
+    return false;
+}

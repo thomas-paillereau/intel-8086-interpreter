@@ -47,7 +47,7 @@ bool IntInstr::execute(Cpu &cpu, bool printing) {
         fflush(nullptr);
         write(fd, textData, len);
         if (printing)
-            printf(" => %i\n", len);
+            printf(" => %i>\n", len);
         cpu.setMem16(index + 2, len);
     } else if (sys_type == 17) {
         uint16_t addr = cpu.getMem16(index + 10);
@@ -65,6 +65,7 @@ bool IntInstr::execute(Cpu &cpu, bool printing) {
     } else {
         result = true; // TODO make error
     }
+    fflush(nullptr);
 
     if (result)
         return true;

@@ -147,7 +147,7 @@ void Cpu::push(uint16_t value) {
 }
 
 uint16_t Cpu::pop() {
-    uint16_t value = memory_[sp_] & 0xF;
+    uint16_t value = memory_[sp_] & 0xFF;
     value += static_cast<uint16_t>(memory_[sp_ + 1]) << 8;
     sp_ += 2;
     return value;

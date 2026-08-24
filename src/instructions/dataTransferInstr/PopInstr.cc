@@ -29,3 +29,14 @@ PopInstr::PopInstr(const std::vector<uint8_t> &content, int position) {
     // POP only takes 16-bit operands
     w_ = true;
 }
+
+bool PopInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
+    uint16_t value = cpu.pop();
+    cpu.set(type_dst_, dst_, value);
+
+    cpu.setLastReg(type_dst_, dst_);
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}
