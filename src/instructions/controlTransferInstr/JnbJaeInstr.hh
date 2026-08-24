@@ -7,4 +7,6 @@
 class JnbJaeInstr : public Instruction {
 public:
     JnbJaeInstr(const std::vector<uint8_t> &content, int position);
+
+    bool execute(Cpu &cpu) override;
 };

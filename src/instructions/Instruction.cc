@@ -500,8 +500,10 @@ void Instruction::searchRelative() {
     } else {
         displacement = static_cast<int8_t>(imm_low_);
     }
+
+    auto target = static_cast<uint16_t>(position_ + size_ + displacement);
     type_dst_ = Cpu::IMM;
-    dst_ = displacement;
+    dst_ = target;
 }
 
 void Instruction::searchOnlyImm() {
