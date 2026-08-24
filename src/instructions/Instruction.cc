@@ -107,9 +107,10 @@ void Instruction::addInfoBytes(const std::vector<uint8_t> &content, int position
 
 // Modifying the zero padding length depending on the opcode
 void Instruction::setZeroPadding() {
-    if (reg_ == -1 && !w_)
+    if (reg_ == -1 && !w_) {
+        byte_ = true;
         padding_ = 0;
-    else if (!s_ && w_)
+    } else if (!s_ && w_)
         padding_ = 4;
     else
         padding_ = 2;
@@ -427,7 +428,7 @@ void Instruction::searchModRm(Cpu &cpu) {
         dst_ = v_ ? static_cast<uint16_t>(Cpu::reg8::CL) : 1;
     } else if (info_byte_type_ != NONE) {
         //TODO checking sign to do in post
-        type_dst_ = Cpu::REG16;
+        type_dst_ = Cpu::IMM;
         dst_ = uint8ToUint16(imm_low_, imm_high_, w_);
     }
 

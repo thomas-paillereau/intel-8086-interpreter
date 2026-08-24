@@ -52,6 +52,7 @@ void Interpreter::interpret() {
             printf("%04x:%-13s"
                    , cpu_.getIp()
                    , Disassembler::getStringFromBytes(cpu_.getContent(), cpu_.getIp(), instr->getSize()).c_str());
+            instr->setZeroPadding();
             std::cout << instr->toString();
             instr->printAddressOfVals(cpu_);
         }

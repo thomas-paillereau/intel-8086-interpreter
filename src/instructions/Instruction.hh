@@ -138,6 +138,9 @@ protected:
     uint8_t disp_high_ = 0b0000;
     int size_disp_ = 0;
 
+    // Value to store the "byte" state
+    bool byte_ = false;
+
     // Printing utilities
     int padding_ = -1;
 
