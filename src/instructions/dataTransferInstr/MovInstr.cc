@@ -56,10 +56,10 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
 }
 
 bool MovInstr::execute(Cpu &cpu) {
-    uint16_t src = cpu.get(type_dst_, dst_);
-    cpu.set(type_src_, src_, src);
-    
-    cpu.setLastReg(type_src_, src_);
+    uint16_t src = cpu.get(type_src_, src_);
+    cpu.set(type_dst_, dst_, src);
+
+    cpu.setLastReg(type_dst_, dst_);
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;

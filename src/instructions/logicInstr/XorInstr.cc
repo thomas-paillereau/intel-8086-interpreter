@@ -36,15 +36,16 @@ XorInstr::XorInstr(const std::vector<uint8_t> &content, int position) {
 }
 
 bool XorInstr::execute(Cpu &cpu) {
-    uint16_t dst = cpu.get(type_src_, src_);
-    uint16_t src = cpu.get(type_dst_, dst_);
+    uint16_t dst = cpu.get(type_dst_, dst_);
+    uint16_t src = cpu.get(type_src_, src_);
     uint16_t value = dst + src;
-    cpu.set(type_src_, src_, value);
-    cpu.setLastReg(type_src_, src_);
+    cpu.set(type_dst_, dst_, value);
     cpu.updateSF(static_cast<short>(value));
     cpu.updateZF(static_cast<short>(value));
     cpu.setFlag(Cpu::SF, false);
     cpu.setFlag(Cpu::SF, false);
+
+    cpu.setLastReg(type_dst_, dst_);
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;
