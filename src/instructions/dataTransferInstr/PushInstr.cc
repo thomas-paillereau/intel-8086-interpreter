@@ -30,3 +30,14 @@ PushInstr::PushInstr(const std::vector<uint8_t> &content, int position) {
     // PUSH only takes 16bit registers
     w_ = true;
 }
+
+bool PushInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
+    uint16_t dst = cpu.get(type_dst_, dst_);
+    cpu.push(dst);
+
+    cpu.setLastReg(type_dst_, dst_);
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}

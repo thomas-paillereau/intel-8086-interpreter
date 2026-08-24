@@ -34,3 +34,10 @@ CallInstr::CallInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool CallInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
+    uint16_t currIp = cpu.getIp();
+    cpu.push(currIp + size_);
+    cpu.setIp(cpu.get(type_dst_, dst_));
+    return false;
+}
