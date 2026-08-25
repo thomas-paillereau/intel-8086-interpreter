@@ -15,3 +15,21 @@ NegInstr::NegInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool NegInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        auto dst = static_cast<short>(cpu.get(type_dst_, dst_));
+        auto value = static_cast<short>(-dst);
+        cpu.set(type_dst_, dst_, value);
+        cpu.updateSF(value);
+        cpu.updateZF(value);
+        cpu.setFlag(Cpu::OF, dst == static_cast<short>(0x8000));
+        cpu.setFlag(Cpu::CF, dst != 0);
+        cpu.setLastReg(type_dst_, dst_);
+    }
+    
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}

@@ -43,8 +43,8 @@ bool XorInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
         cpu.set(type_dst_, dst_, value);
         cpu.updateSF(static_cast<short>(value));
         cpu.updateZF(static_cast<short>(value));
-        cpu.setFlag(Cpu::SF, false);
-        cpu.setFlag(Cpu::SF, false);
+        cpu.setFlag(Cpu::OF, false);
+        cpu.setFlag(Cpu::CF, false);
         cpu.setLastReg(type_dst_, dst_);
     }
     cpu.addToIp(size_);
