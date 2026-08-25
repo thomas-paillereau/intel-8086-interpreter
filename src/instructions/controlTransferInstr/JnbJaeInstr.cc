@@ -8,8 +8,8 @@ JnbJaeInstr::JnbJaeInstr(const std::vector<uint8_t> &content, int position) {
     info_byte_type_ = DISP;
 }
 
-bool JnbJaeInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
-    if (!cpu.getFlag(Cpu::CF)) {
+bool JnbJaeInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt && !cpu.getFlag(Cpu::CF)) {
         cpu.setIp(cpu.get(type_dst_, dst_));
         return false;
     }

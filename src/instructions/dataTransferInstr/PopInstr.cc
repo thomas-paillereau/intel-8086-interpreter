@@ -30,11 +30,13 @@ PopInstr::PopInstr(const std::vector<uint8_t> &content, int position) {
     w_ = true;
 }
 
-bool PopInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
-    uint16_t value = cpu.pop();
-    cpu.set(type_dst_, dst_, value);
+bool PopInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        uint16_t value = cpu.pop();
+        cpu.set(type_dst_, dst_, value);
+        cpu.setLastReg(type_dst_, dst_);
+    }
 
-    cpu.setLastReg(type_dst_, dst_);
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;

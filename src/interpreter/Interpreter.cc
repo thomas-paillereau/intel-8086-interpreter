@@ -21,6 +21,7 @@ void Interpreter::interpret() {
     if (printing_enabled_)
         std::cout << " AX   BX   CX   DX   SP   BP   SI   DI  FLAGS IP" << std::endl;
     bool running = true;
+    bool halt = false;
     while (running) {
         // Getting instruction
         std::unique_ptr<Instruction> instr;
@@ -58,7 +59,7 @@ void Interpreter::interpret() {
         }
 
         // Executing the command
-        bool ip_exceeded = instr->execute(cpu_, printing_enabled_);
+        bool ip_exceeded = instr->execute(cpu_, halt, printing_enabled_);
 
         if (ip_exceeded) {
             std::cerr << "Error : Instruction section size was exceeded." << std::endl;

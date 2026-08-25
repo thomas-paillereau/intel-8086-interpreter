@@ -31,11 +31,13 @@ PushInstr::PushInstr(const std::vector<uint8_t> &content, int position) {
     w_ = true;
 }
 
-bool PushInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
-    uint16_t dst = cpu.get(type_dst_, dst_);
-    cpu.push(dst);
+bool PushInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        uint16_t dst = cpu.get(type_dst_, dst_);
+        cpu.push(dst);
+        cpu.setLastReg(type_dst_, dst_);
+    }
 
-    cpu.setLastReg(type_dst_, dst_);
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;

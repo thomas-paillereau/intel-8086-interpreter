@@ -35,17 +35,20 @@ SubInstr::SubInstr(const std::vector<uint8_t> &content, int position) {
     addInfoBytes(content, position);
 }
 
-bool SubInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
-    uint16_t dst = cpu.get(type_dst_, dst_);
-    uint16_t src = cpu.get(type_src_, src_);
-    uint16_t value = dst - src;
-    cpu.set(type_dst_, dst_, value);
-    cpu.updateOF(dst, src, value, '-');
-    cpu.updateSF(static_cast<short>(value));
-    cpu.updateZF(static_cast<short>(value));
-    cpu.updateCF(dst, src, '-');
+bool SubInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        uint16_t dst = cpu.get(type_dst_, dst_);
+        uint16_t src = cpu.get(type_src_, src_);
+        uint16_t value = dst - src;
+        cpu.set(type_dst_, dst_, value);
+        cpu.updateOF(dst, src, value, '-');
+        cpu.updateSF(static_cast<short>(value));
+        cpu.updateZF(static_cast<short>(value));
+        cpu.updateCF(dst, src, '-');
 
-    cpu.setLastReg(type_dst_, dst_);
+        cpu.setLastReg(type_dst_, dst_);
+    }
+    
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;

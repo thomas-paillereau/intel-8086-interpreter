@@ -27,7 +27,7 @@ public:
     void printAddressOfVals(Cpu &cpu) const;
 
     // Execute the instruction
-    virtual bool execute(Cpu &cpu, bool printing);
+    virtual bool execute(Cpu &cpu, bool &halt, bool printing);
 
     int getSize() const;
 

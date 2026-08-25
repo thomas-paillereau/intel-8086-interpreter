@@ -18,12 +18,12 @@ IntInstr::IntInstr(const std::vector<uint8_t> &content, int position) {
     }
 }
 
-bool IntInstr::execute(Cpu &cpu, bool printing) {
+bool IntInstr::execute(Cpu &cpu, bool &halt, bool printing) {
     auto lastReg = cpu.getLastReg();
     uint16_t index = cpu.get(lastReg.first, lastReg.second);
     uint16_t type = cpu.get(type_dst_, dst_);
 
-    //TODO add halt removal
+    halt = false;
     cpu.setReg16(Cpu::AX, 0);
 
     if (type != 0x20)

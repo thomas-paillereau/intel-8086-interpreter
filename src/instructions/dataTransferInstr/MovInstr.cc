@@ -55,11 +55,13 @@ MovInstr::MovInstr(const std::vector<uint8_t> &content, int position) {
     addInfoBytes(content, position);
 }
 
-bool MovInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
-    uint16_t src = cpu.get(type_src_, src_);
-    cpu.set(type_dst_, dst_, src);
+bool MovInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        uint16_t src = cpu.get(type_src_, src_);
+        cpu.set(type_dst_, dst_, src);
 
-    cpu.setLastReg(type_dst_, dst_);
+        cpu.setLastReg(type_dst_, dst_);
+    }
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;

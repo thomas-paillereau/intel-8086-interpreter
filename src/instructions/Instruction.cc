@@ -317,7 +317,7 @@ void Instruction::print() const {
 /// -----------------------------------------------------------------------------------------------------------------///
 /// Main functions of instruction execution (overridable)
 
-bool Instruction::execute([[maybe_unused]] Cpu &cpu, [[maybe_unused]] bool printing) {
+bool Instruction::execute([[maybe_unused]] Cpu &cpu, [[maybe_unused]] bool &halt, [[maybe_unused]] bool printing) {
     if (name_ == "(undefined)") {
         throw UnknownInstructionException("Execution was stopped, Unknown instruction detected");
     } else {

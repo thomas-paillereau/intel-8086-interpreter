@@ -35,21 +35,23 @@ CmpInstr::CmpInstr(const std::vector<uint8_t> &content, int position) {
     addInfoBytes(content, position);
 }
 
-bool CmpInstr::execute(Cpu &cpu, [[maybe_unused]] bool printing) {
-    auto dst = static_cast<short>(cpu.get(type_dst_, dst_));
-    auto src = static_cast<short>(cpu.get(type_src_, src_));
-    auto value = static_cast<short>(dst - src);
-    cpu.updateOF(dst, src, value, '-');
-    if (byte_) {
-        cpu.updateZF(static_cast<uint8_t>(dst) - static_cast<uint8_t>(src));
-        cpu.updateSF(static_cast<uint8_t>(dst) - static_cast<uint8_t>(src));
-    } else {
-        cpu.updateZF(value);
-        cpu.updateSF(value);
+bool CmpInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (halt) {
+        auto dst = static_cast<short>(cpu.get(type_dst_, dst_));
+        auto src = static_cast<short>(cpu.get(type_src_, src_));
+        auto value = static_cast<short>(dst - src);
+        cpu.updateOF(dst, src, value, '-');
+        if (byte_) {
+            cpu.updateZF(static_cast<uint8_t>(dst) - static_cast<uint8_t>(src));
+            cpu.updateSF(static_cast<uint8_t>(dst) - static_cast<uint8_t>(src));
+        } else {
+            cpu.updateZF(value);
+            cpu.updateSF(value);
+        }
+        cpu.updateCF(dst, src, '-');
+        cpu.setLastReg(type_dst_, dst_);
     }
-    cpu.updateCF(dst, src, '-');
-
-    cpu.setLastReg(type_dst_, dst_);
+    
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;
