@@ -143,8 +143,8 @@ private:
         uint16_t x;
 
         struct part {
-            uint8_t h;
             uint8_t l;
+            uint8_t h;
         } bytes;
     };
 

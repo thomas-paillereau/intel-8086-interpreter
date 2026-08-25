@@ -409,6 +409,8 @@ void Instruction::searchMemoryOperand(uint16_t base) {
         base += displacement;
     }
     type_src_ = Cpu::MEM16;
+    if (!w_)
+        type_src_ = Cpu::MEM8;
     src_ = base;
 }
 
@@ -509,9 +511,15 @@ void Instruction::printAddressOfVals(Cpu &cpu) const {
     if (type_dst_ == Cpu::MEM16) {
         std::cout << " ;[" << std::hex << std::setw(4) << std::setfill('0') << dst_ << std::dec << "]"
                 << std::hex << std::setw(4) << std::setfill('0') << cpu.get(type_dst_, dst_);
+    } else if (type_dst_ == Cpu::MEM8) {
+        std::cout << " ;[" << std::hex << std::setw(4) << std::setfill('0') << dst_ << std::dec << "]"
+                << std::hex << std::setw(2) << std::setfill('0') << cpu.get(type_dst_, dst_);
     } else if (type_src_ == Cpu::MEM16) {
         std::cout << " ;[" << std::hex << std::setw(4) << std::setfill('0') << src_ << std::dec << "]"
                 << std::hex << std::setw(4) << std::setfill('0') << cpu.get(type_src_, src_);
+    } else if (type_src_ == Cpu::MEM8) {
+        std::cout << " ;[" << std::hex << std::setw(4) << std::setfill('0') << src_ << std::dec << "]"
+                << std::hex << std::setw(2) << std::setfill('0') << cpu.get(type_src_, src_);
     }
     std::cout << std::endl;
 }

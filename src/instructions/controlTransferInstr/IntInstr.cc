@@ -38,7 +38,7 @@ bool IntInstr::execute(Cpu &cpu, bool &halt, bool printing) {
 
     if (sys_type == 1) {
         if (printing)
-            std::cout << "<exit(" << fd << ")>" << std::endl;
+            std::cout << "<exit(" << std::dec << fd << ")>" << std::endl;
         result = true;
     } else if (sys_type == 4) {
         uint8_t *textData = cpu.getMemory().data() + coords;
