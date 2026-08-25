@@ -36,7 +36,7 @@ CmpInstr::CmpInstr(const std::vector<uint8_t> &content, int position) {
 }
 
 bool CmpInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
-    if (halt) {
+    if (!halt) {
         auto dst = static_cast<short>(cpu.get(type_dst_, dst_));
         auto src = static_cast<short>(cpu.get(type_src_, src_));
         auto value = static_cast<short>(dst - src);
@@ -51,7 +51,7 @@ bool CmpInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
         cpu.updateCF(dst, src, '-');
         cpu.setLastReg(type_dst_, dst_);
     }
-    
+
     cpu.addToIp(size_);
     if (position_ + size_ <= position_)
         return true;
