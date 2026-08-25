@@ -7,6 +7,8 @@
 !.gitignore
 !CMakeLists.txt
 !16bit-intel-8086-documentation.pdf
+!tests/executable_files/assembly_compiled_files/*.out
+!tests/executable_files/c_compiled_files/*.out
 
 .idea/
 
