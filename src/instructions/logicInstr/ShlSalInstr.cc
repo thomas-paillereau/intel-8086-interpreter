@@ -19,3 +19,20 @@ ShlSalInstr::ShlSalInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool ShlSalInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        uint16_t dst = cpu.get(type_dst_, dst_);
+        uint16_t src = cpu.get(type_src_, src_);
+        uint16_t value = dst << src;
+        cpu.set(type_dst_, dst_, value);
+        cpu.setFlag(Cpu::CF, dst >> (16 - src) & 0x1);
+        cpu.updateSF(static_cast<short>(value));
+        cpu.updateZF(static_cast<short>(value));
+        cpu.setLastReg(type_dst_, dst_);
+    }
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}
