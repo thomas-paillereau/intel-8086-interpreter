@@ -425,6 +425,8 @@ void Instruction::searchModRm(Cpu &cpu) {
     } else if (info_byte_type_ != NONE) {
         //TODO checking sign to do in post
         type_dst_ = Cpu::IMM;
+        if (s_ || !w_)
+            type_dst_ = Cpu::IMM8;
         dst_ = uint8ToUint16(imm_low_, imm_high_, w_);
     }
 

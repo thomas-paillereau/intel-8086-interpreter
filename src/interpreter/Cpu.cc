@@ -106,6 +106,8 @@ uint16_t Cpu::get(type type, int index) const {
             return getSeg(static_cast<seg>(index));
         case FLAG:
             return getFlag(static_cast<flag>(index));
+        case IMM8:
+            return index | (index & 0x80 ? 0xFF00 : 0x0000);
         case IMM:
             return index;
         default:

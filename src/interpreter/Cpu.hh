@@ -42,6 +42,7 @@ public:
         REG16,
         SEG,
         FLAG,
+        IMM8,
         IMM,
     };
 
