@@ -2,6 +2,9 @@
 
 #include <cstring>
 
+#include "exceptions/NonExistentCpuRegisterException.hh"
+#include "exceptions/NonExistentDataTypeException.hh"
+
 /// Constructor
 
 Cpu::Cpu(const std::vector<uint8_t> &content, int content_size, int data_size
@@ -111,7 +114,7 @@ uint16_t Cpu::get(type type, int index) const {
         case IMM:
             return index;
         default:
-            return 0; // TODO make error
+            throw NonExistentDataTypeException(("type " + std::to_string(static_cast<int>(type)) + " is unknown").c_str());
     }
 }
 
@@ -136,7 +139,7 @@ void Cpu::set(type type, int index, uint16_t value) {
             setFlag(static_cast<flag>(index), value);
             break;
         default:
-            break; // TODO make error
+            throw NonExistentDataTypeException(("type " + std::to_string(static_cast<int>(type)) + " is unknown").c_str());
     }
 }
 
@@ -199,7 +202,7 @@ uint8_t Cpu::getReg8(reg8 index) const {
         case BH:
             return b_.bytes.h;
         default:
-            return 0; // TODO make error
+            throw NonExistentCpuRegisterException(("8bit register \"" + std::to_string(index) + "\" is unknown").c_str());
     }
 }
 
@@ -230,7 +233,7 @@ void Cpu::setReg8(reg8 index, uint8_t value) {
             b_.bytes.h = value;
             break;
         default:
-            break; // TODO make error
+            throw NonExistentCpuRegisterException(("8bit register \"" + std::to_string(index) + "\" is unknown").c_str());
     }
 }
 
@@ -253,7 +256,7 @@ uint16_t Cpu::getReg16(reg16 index) const {
         case DI:
             return di_;
         default:
-            return 0; // TODO make error
+            throw NonExistentCpuRegisterException(("16bit register \"" + std::to_string(index) + "\" is unknown").c_str());
     }
 }
 
@@ -284,7 +287,7 @@ void Cpu::setReg16(reg16 index, uint16_t value) {
             di_ = value;
             break;
         default:
-            break; // TODO make error
+            throw NonExistentCpuRegisterException(("16bit register \"" + std::to_string(index) + "\" is unknown").c_str());
     }
 }
 
@@ -301,7 +304,7 @@ uint16_t Cpu::getSeg(seg index) const {
         case DS:
             return ds_;
         default:
-            return 0; // TODO make error
+            throw NonExistentCpuRegisterException(("Segment register \"" + std::to_string(index) + "\" is unknown").c_str());
     }
 }
 
@@ -320,7 +323,7 @@ void Cpu::setSeg(seg index, uint16_t value) {
             ds_ = value;
             break;
         default:
-            break; // TODO make error
+            throw NonExistentCpuRegisterException(("Segment register \"" + std::to_string(index) + "\" is unknown").c_str());
     }
 }
 
@@ -337,7 +340,7 @@ bool Cpu::getFlag(flag flag) const {
         case CF:
             return cf_;
         default:
-            return false; // TODO make error
+            throw NonExistentCpuRegisterException(("Flag register \"" + std::to_string(flag) + "\" is unknown").c_str());
     }
 }
 
@@ -356,7 +359,7 @@ void Cpu::setFlag(flag flag, bool value) {
             cf_ = value;
             break;
         default:
-            break; // TODO make error
+            throw NonExistentCpuRegisterException(("Flag register \"" + std::to_string(flag) + "\" is unknown").c_str());
     }
 }
 

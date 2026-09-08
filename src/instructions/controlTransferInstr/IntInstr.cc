@@ -3,6 +3,8 @@
 #include <iomanip>
 #include <iostream>
 
+#include "exceptions/UnknownSyscallException.hh"
+
 IntInstr::IntInstr(const std::vector<uint8_t> &content, int position) {
     name_ = "int";
     position_ = position;
@@ -63,7 +65,7 @@ bool IntInstr::execute(Cpu &cpu, bool &halt, bool printing) {
             printf("<ioctl(%i, 0x%04hx, 0x%04hx)>\n", fd, value1, value2);
         cpu.setMem16(index + 2, -errno);
     } else {
-        result = true; // TODO make error
+        throw UnknownSyscallException(("Syscall number " + std::to_string(sys_type) + " is unknown").c_str());
     }
     fflush(nullptr);
 

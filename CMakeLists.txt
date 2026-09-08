@@ -114,6 +114,9 @@ add_executable(intel8084Interpreter
         src/exceptions/NonImplementedInstructionException.hh
         src/interpreter/Interpreter.cc
         src/interpreter/Interpreter.hh
+        src/exceptions/NonExistentDataTypeException.hh
+        src/exceptions/NonExistentCpuRegisterException.hh
+        src/exceptions/UnknownSyscallException.hh
 )
 
 target_compile_options(intel8084Interpreter PRIVATE
