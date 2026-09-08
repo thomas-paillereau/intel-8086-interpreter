@@ -15,3 +15,25 @@ DivInstr::DivInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool DivInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        auto value = static_cast<short>(cpu.get(type_dst_, dst_));
+        if (value != 0)
+        {
+            uint32_t ax = cpu.get(Cpu::REG16, Cpu::AX);
+            uint32_t dx = cpu.get(Cpu::REG16, Cpu::DX);
+            uint32_t dividend = (dx << 16) | ax;
+            uint16_t quotient = dividend / value;
+            uint16_t remainder = dividend % value;
+
+            cpu.set(Cpu::REG16, Cpu::AX, quotient);
+            cpu.set(Cpu::REG16, Cpu::DX, remainder);
+        }
+    }
+
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}
