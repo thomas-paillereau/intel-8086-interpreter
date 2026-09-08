@@ -24,3 +24,17 @@ XchgInstr::XchgInstr(const std::vector<uint8_t> &content, int position) {
 
     addInfoBytes(content, position);
 }
+
+bool XchgInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
+    if (!halt) {
+        uint16_t dst = cpu.get(type_dst_, dst_);
+        uint16_t src = cpu.get(type_src_, src_);
+        cpu.set(type_dst_, dst_, src);
+        cpu.set(type_src_, src_, dst);
+    }
+
+    cpu.addToIp(size_);
+    if (position_ + size_ <= position_)
+        return true;
+    return false;
+}
