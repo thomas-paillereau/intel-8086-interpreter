@@ -19,12 +19,15 @@ This project uses :
 ### Manual Installation
 
 Once the source code is installed, in the root folder of the repository, you can run the command :
-> cmake -S . -B build/
+```shell
+cmake -S . -B build/
+```
 
 This will create a `build` folder, where all compilation items will be placed.
 Once the command finished, run the following:
-
-> cmake --build build/
+```shell
+cmake --build build/
+```
 
 This will create the executable file, in the `build` folder.
 
@@ -40,7 +43,9 @@ This executable takes in an intel 8086 compiled executable (not runnable with cu
 
 Using the following command in the root folder : 
 
-> ./build/intel8084Interpreter \<filepath>
+```shell
+./build/intel8084Interpreter \<filepath>
+```
 
 will interpret the given file, using the emulated CPU.
 
@@ -49,8 +54,9 @@ The flag `-m` can be used to display all instruction actions on the CPU and the 
 ### Disassembling
 
 Using the following command in the root folder : 
-
-> ./build/intel8084Interpreter -d \<filepath>
+```shell
+./build/intel8084Interpreter -d \<filepath>
+```
 
 will disassemble the given file, showing all the instructions the executable can find.
 
