@@ -1,12 +1,12 @@
 # Intel 8086 Interpreter 
 
-This intel 8086 interpreter is an g++ executable capable of interpreting intel 8086 architecture compiled files, using an emulated CPU.
+This intel 8086 interpreter is a g++ executable capable of interpreting intel 8086 architecture compiled files, using an emulated CPU.
 
 It is a second version of a previous academic project.
 The goal was to enhance readability, code maintenance, error handling and architecture,
 while keeping the old functionalities and optimizing the program (using c++).
 
-The disassembler was also fused with this project, usable through another flags usage.
+The disassembler was also fused with this project, usable through another flag's usage.
 
 ## Installation 
 
@@ -31,7 +31,7 @@ cmake --build build/
 
 This will create the executable file, in the `build` folder.
 
-It will called `intel8084Interpreter`.
+It will call `intel8084Interpreter`.
 
 So the relative path from the root folder would ordinarily be `build/intel8084Interpreter`.
 
@@ -44,7 +44,7 @@ This executable takes in an intel 8086 compiled executable (not runnable with cu
 Using the following command in the root folder : 
 
 ```shell
-./build/intel8084Interpreter \<filepath>
+./build/intel8084Interpreter <filepath>
 ```
 
 will interpret the given file, using the emulated CPU.
@@ -55,12 +55,12 @@ The flag `-m` can be used to display all instruction actions on the CPU and the 
 
 Using the following command in the root folder : 
 ```shell
-./build/intel8084Interpreter -d \<filepath>
+./build/intel8084Interpreter -d <filepath>
 ```
 
 will disassemble the given file, showing all the instructions the executable can find.
 
-**Important**: The disassembling is done without caring about instruction execution. So the Control Transfer Instructions
+> **Important**: The disassembling is done without caring about instruction execution. So the Control Transfer Instructions
 will not impact the disassembling (ex: jmp instruction will not jump to another instruction).
 
 ## Tests
