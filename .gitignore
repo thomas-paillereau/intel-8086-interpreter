@@ -5,6 +5,7 @@
 !*.cc
 !*.hh
 !.gitignore
+!README.md
 !CMakeLists.txt
 !16bit-intel-8086-documentation.pdf
 !tests/executable_files/assembly_compiled_files/*.out
