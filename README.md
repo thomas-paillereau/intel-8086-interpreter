@@ -77,5 +77,4 @@ Some instructions, syscall and other behavior are not yet implemented.
 
 Proper exceptions should be thrown, to detail which type of error it could cause.
 
-## Credits
 
