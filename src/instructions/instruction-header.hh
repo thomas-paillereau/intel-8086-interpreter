@@ -20,7 +20,7 @@
 
 /// Arithmetic Instructions -----------------------------------------------------------------------------------------///
 #include "arithmeticInstr/AddInstr.hh"
-#include "arithmeticInstr/AdcInstr.hh" //TODO execution
+#include "arithmeticInstr/AdcInstr.hh"
 #include  "arithmeticInstr/IncInstr.hh"
 // AAA
 // BAA
