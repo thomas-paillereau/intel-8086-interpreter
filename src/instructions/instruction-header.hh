@@ -7,7 +7,7 @@
 #include "dataTransferInstr/PushInstr.hh"
 #include "dataTransferInstr/PopInstr.hh"
 #include "dataTransferInstr/XchgInstr.hh"
-#include "dataTransferInstr/InInstr.hh"
+#include "dataTransferInstr/InInstr.hh" //TODO execution
 // OUT
 // XLAT
 #include "dataTransferInstr/LeaInstr.hh"
@@ -20,18 +20,18 @@
 
 /// Arithmetic Instructions -----------------------------------------------------------------------------------------///
 #include "arithmeticInstr/AddInstr.hh"
-#include "arithmeticInstr/AdcInstr.hh"
+#include "arithmeticInstr/AdcInstr.hh" //TODO execution
 #include  "arithmeticInstr/IncInstr.hh"
 // AAA
 // BAA
 #include "arithmeticInstr/SubInstr.hh"
-#include "arithmeticInstr/SbbInstr.hh"
+#include "arithmeticInstr/SbbInstr.hh" //TODO execution
 #include "arithmeticInstr/DecInstr.hh"
 #include "arithmeticInstr/NegInstr.hh"
 #include "arithmeticInstr/CmpInstr.hh"
 // AAS
 // DAS
-#include "arithmeticInstr/MulInstr.hh"
+#include "arithmeticInstr/MulInstr.hh" //TODO execution
 // IMUL
 // AAM
 #include "arithmeticInstr/DivInstr.hh"
@@ -43,11 +43,11 @@
 /// Logic Instructions ----------------------------------------------------------------------------------------------///
 // NOT
 #include "logicInstr/ShlSalInstr.hh"
-#include "logicInstr/ShrInstr.hh"
+#include "logicInstr/ShrInstr.hh" //TODO execution
 #include "logicInstr/SarInstr.hh"
 // ROL
 // ROR
-#include "logicInstr/RclInstr.hh"
+#include "logicInstr/RclInstr.hh" //TODO execution
 // RCR
 #include "logicInstr/AndInstr.hh"
 #include "logicInstr/TestInstr.hh"
@@ -55,8 +55,8 @@
 #include "logicInstr/XorInstr.hh"
 
 /// String Manipulation Instructions --------------------------------------------------------------------------------///
-#include "stringManipulationInstr/RepInstr.hh"
-#include "stringManipulationInstr/MovsInstr.hh"
+#include "stringManipulationInstr/RepInstr.hh" //TODO execution
+#include "stringManipulationInstr/MovsInstr.hh" //TODO execution
 // CMPS
 // SCAS
 // LODS
@@ -82,7 +82,7 @@
 // JNP/JPO
 // JNO
 // JNS
-#include "controlTransferInstr/LoopInstr.hh"
+#include "controlTransferInstr/LoopInstr.hh" //TODO execution
 // LOOPZ/LOOPE
 // LOOPNZ/LOOPNE
 // JCXZ
@@ -94,8 +94,8 @@
 // CLC
 // CMC
 // STC
-#include "processorControlInstr/CldInstr.hh"
-#include "processorControlInstr/StdInstr.hh"
+#include "processorControlInstr/CldInstr.hh" //TODO execution
+#include "processorControlInstr/StdInstr.hh" //TODO execution
 // CLI
 // STI
 #include "processorControlInstr/HltInstr.hh"
