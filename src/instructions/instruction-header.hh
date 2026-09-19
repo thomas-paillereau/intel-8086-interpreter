@@ -25,7 +25,7 @@
 // AAA
 // BAA
 #include "arithmeticInstr/SubInstr.hh"
-#include "arithmeticInstr/SbbInstr.hh" //TODO execution
+#include "arithmeticInstr/SbbInstr.hh"
 #include "arithmeticInstr/DecInstr.hh"
 #include "arithmeticInstr/NegInstr.hh"
 #include "arithmeticInstr/CmpInstr.hh"
