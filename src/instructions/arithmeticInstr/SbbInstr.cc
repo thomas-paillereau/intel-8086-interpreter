@@ -39,13 +39,13 @@ bool SbbInstr::execute(Cpu &cpu, bool &halt, [[maybe_unused]] bool printing) {
     if (!halt) {
         uint16_t dst = cpu.get(type_dst_, dst_);
         uint16_t src = cpu.get(type_src_, src_);
-        uint16_t sup = cpu.get(cpu.getLastReg().first, cpu.getLastReg().second);
-        uint16_t value = dst - src - sup;
+        uint16_t cf = cpu.getFlag(Cpu::CF);
+        uint16_t value = dst - src - cf;
         cpu.set(type_dst_, dst_, value);
-        cpu.updateOF(dst, src + sup, value, '-');
-        cpu.updateSF(static_cast<short>(value));
-        cpu.updateZF(static_cast<short>(value));
-        cpu.updateCF(dst, src + sup, '-');
+        cpu.updateOF(dst, src + cf, value, '-');
+        cpu.updateSF(static_cast<int16_t>(value));
+        cpu.updateZF(static_cast<int16_t>(value));
+        cpu.updateCF(dst, src + cf, '-');
 
         cpu.setLastReg(type_dst_, dst_);
     }
