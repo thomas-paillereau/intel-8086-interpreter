@@ -8,7 +8,8 @@ while keeping the old functionalities and optimizing the program (using c++).
 
 The disassembler was also fused with this project, usable through another flag's usage.
 
-> All documentation can be found in the official intel documentation : https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
+> All documentation can be found in the official intel documentation
+> https://www.intel.com/content/www/us/en/developer/articles/technical/intel-sdm.html
 
 ## Installation 
 
