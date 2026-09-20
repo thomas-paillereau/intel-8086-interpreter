@@ -31,7 +31,7 @@
 #include "arithmeticInstr/CmpInstr.hh"
 // AAS
 // DAS
-#include "arithmeticInstr/MulInstr.hh" //TODO execution
+#include "arithmeticInstr/MulInstr.hh"
 // IMUL
 // AAM
 #include "arithmeticInstr/DivInstr.hh"
